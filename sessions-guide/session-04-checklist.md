@@ -1,113 +1,94 @@
-# Session 04 — Checklist (React Router & UI Composition)
+# Session 04 — Checklist (Global State with Context + useReducer)
 
 ## Purpose
 
-- Convert the single-view app into a routed SPA with client-side navigation.
-- Build the full UI shell: Header, FilterBar, StatsBanner, MovieModal, ApiConfigModal.
-- Upgrade movieService.js to support genre filtering, sorting, and runtime API key entry.
+- Remove prop drilling by lifting `theme` and `favourites` state out of `HomePage` into a central `AppContext`.
+- Use `useReducer` for structured state transitions. `storage.js` (built in Session 03) handles persistence.
+- After this session the app should be functionally identical to the finished project.
 
 ---
 
 ## What to implement
 
-1. **Install lucide-react**
-   - The finished project uses `lucide-react` for all icons (Search, X, Heart, Settings, Sun, Moon in Header; Heart in MovieCard; X, Heart, Youtube in MovieModal).
-   - Run `npm install lucide-react` from `starter/` before building any of these components.
-   - Acceptance: `import { Heart } from 'lucide-react'` resolves without error.
+1. **AppContext — useState version first (Exercise 1 in lab)**
+   - Create `src/context/AppContext.tsx` starting with `useState` for both `theme` and `favorites`.
+   - Context value provides: `theme`, `toggleTheme()`, `favorites`, `toggleFavorite(movie)`, `isFavorite(id)`.
+   - `AppProvider` applies the theme in a `useEffect` on `theme` that calls `storage.setTheme(theme)`.
+   - Export `useAppContext()` with a null guard that throws if called outside the provider.
+   - Acceptance: consuming components can call `useAppContext()` to access theme/favourites without prop threading.
 
-2. **Upgrade movieService.js**
-   - This is the most important step of the session. The Session 03 version used a Bearer token from `.env`. Replace it with:
-     - Read the API key at request time via `storage.getApiKey()` (so the runtime key from `ApiConfigModal` is used)
-     - Use `?api_key=` query parameter instead of the `Authorization: Bearer` header (TMDB v3 key format)
-     - Route genre-filtered requests to `GET /discover/movie?api_key=...&with_genres={genre}&page={page}`
-     - Route search requests to `GET /search/movie?api_key=...&query={search}&page={page}`
-     - Route unfiltered requests to `GET /movie/popular?api_key=...&page={page}`
-     - Add a `sortMovies(movies, sort)` helper that sorts locally by `popularity`, `vote_average`, `release_date`, or `title`
-     - When `onlyFavorites` is true: return `storage.getFavorites()` filtered by `search` — skip the API call
-   - When no API key is stored: fall back to `SAMPLE_MOVIES` with local filtering by search and genre, and apply `sortMovies`.
-   - Acceptance: clicking a genre pill updates the movie list to show only that genre; sort selector reorders results.
-   - **Note:** the v3 API key (short) is different from the Read Access Token (long Bearer token) used in Session 03. Both are in your TMDB account under Settings → API.
+2. **AppProvider and useAppContext hook**
+   - Export `useAppContext()` that throws a clear error if used outside `AppProvider`.
+   - Pass helper functions (`toggleFavorite`, `toggleTheme`) as the context value, not `dispatch` — consumers call `toggleFavorite(movie)`, not `dispatch({ type: ... })`.
+   - Acceptance: calling `useAppContext()` outside the provider throws immediately with a readable error message.
 
-3. **Routing**
-   - Wrap the app in `BrowserRouter` and define `Routes` for:
-     - `/` → `HomePage`
-     - `/about` → `AboutPage`
-     - `*` → `NotFoundPage` (wildcard fallback — must be last)
-   - Acceptance: navigating to `/about` shows the about view without a full page reload; unknown paths render the 404 page.
+3. **Wrap App with AppProvider**
+   - In `src/App.tsx`, render `<AppProvider>` as the outermost wrapper, enclosing `<BrowserRouter>` and all routes.
+   - Remove the theme initialisation `useEffect` that was previously in `App.tsx` — `AppProvider` now handles it.
+   - Acceptance: any component anywhere in the tree can call `useAppContext()` without throwing.
 
-4. **Split App into pages**
-   - `src/pages/HomePage.tsx` — owns all movie state and handlers; renders Header, FilterBar, StatsBanner, the movie grid, MovieModal
-   - `src/pages/AboutPage.tsx` — static info page
-   - `src/pages/NotFoundPage.tsx` — 404 message with a "Back to Home" button using `useNavigate`
-   - `src/App.tsx` becomes a ~20-line routing shell: `BrowserRouter` + `Routes` + theme initialisation from `storage.getTheme()` on mount
-   - Acceptance: `App.tsx` contains no movie state; all data concerns live in `HomePage.tsx`.
+4. **Upgrade to useReducer (Exercise 3 in lab)**
+   - Replace the two `useState` calls in `AppProvider` with `useReducer`:
+     - `State = { favorites: Movie[]; theme: 'dark' | 'light' }`
+     - `Action = TOGGLE_FAVOURITE (payload: Movie) | SET_THEME (payload: Theme)`
+   - Note: state key is `favorites` (American, matching `storage.getFavorites()`); action type strings use British spelling.
+   - Reducer cases:
+     - `TOGGLE_FAVOURITE` — call `storage.toggleFavorite(action.payload)` then return `{ ...state, favorites: storage.getFavorites() }` (impure — see note below)
+     - `SET_THEME` — return `{ ...state, theme: action.payload }` only; do NOT call `storage.setTheme()` here
+   - Keep the `useEffect` on `state.theme` that calls `storage.setTheme(state.theme)`.
+   - Acceptance: no consumer component changes are needed; all behaviour is identical before and after the switch.
+   - **Note on the two patterns:** `TOGGLE_FAVOURITE` calls `storage.toggleFavorite()` inside the reducer (impure, avoids a re-render cycle). `SET_THEME` keeps the reducer pure and uses `useEffect` for persistence. Raise this contrast with students explicitly.
 
-5. **Header component**
-   - Receives 8 props from `HomePage`: `search`, `onSearch`, `onlyFavorites`, `onToggleFavorites`, `theme`, `onToggleTheme`, `favCount`, `onOpenApiConfig`
-   - Renders site title, a search input, theme toggle, favourites toggle with count, and an "API Key" button
-   - Uses `NavLink` for navigation links; add `end` to the `/` link so it is not active on every page
-   - Acceptance: `NavLink` active state works; search input is controlled; all callbacks fire correctly.
+5. **Simplify HomePage**
+   - Remove `theme`, `onToggleTheme`, `favourites`, `favCount`, and `onToggleFavourites` from `HomePage`'s state and handlers — these now come from context.
+   - Acceptance: `HomePage` no longer manages theme or favourites state.
 
-6. **FilterBar component**
-   - Genre pills (one per genre from `genres.js`) — selected genre highlighted
-   - Sort selector (`<select>`) for popularity / rating / release date / title
-   - View toggle button (grid / list)
-   - Acceptance: selecting a genre or sort option calls the handler prop and the movie list updates.
+6. **Simplify Header**
+   - Remove `theme`, `onToggleTheme`, and `favCount` from Header's props — these now come from `useAppContext()`.
+   - Keep `onToggleFavorites` as a prop — it controls the "show only favourites" filter which is local state in `HomePage`.
+   - Header's prop count drops from 8 to 5 (`search`, `onSearch`, `onlyFavorites`, `onToggleFavorites`, `onOpenApiConfig`).
+   - Acceptance: Header renders correctly without receiving theme or favourite props from `HomePage`.
 
-7. **StatsBanner component**
-   - Read-only display: result count, average rating, active genre, and a live-API / local-data indicator
-   - Acceptance: banner values update when filters change.
+7. **Wire MovieCard to context**
+   - Remove `isFavourite` local state from `MovieCard`.
+   - Call `isFavorite(movie.id)` and `toggleFavorite(movie)` from `useAppContext()` instead.
+   - Acceptance: toggling a favourite on a card updates the Header count immediately and persists across page reloads.
 
-8. **MovieModal component**
-   - Opens when a `MovieCard` is clicked; does not change the URL
-   - Displays poster, backdrop, title, overview, rating, release date, genre tags, a watchlist toggle button, and a YouTube trailer search link
-   - Close on: backdrop click (`e.target === e.currentTarget`), Escape key (`useEffect` with `keydown` listener and cleanup), or a close button
-   - Restore `document.body.style.overflow` in cleanup to prevent stuck scroll
-   - Acceptance: opening a modal does not change the URL; all filter and scroll state is preserved when the modal closes.
+8. **Wire MovieModal to context**
+   - Add a watchlist toggle button inside `MovieModal` that calls `toggleFavorite(movie)` and shows the current `isFavorite(movie.id)` state from `useAppContext()`.
+   - Acceptance: toggling a favourite inside the modal is reflected on the card and in the Header count.
 
-9. **ApiConfigModal component**
-   - Overlay that accepts a TMDB v3 API key input and saves it via `storage.setApiKey()`
-   - Opened via the "API Key" button in Header
-   - Acceptance: entering a key and saving it causes subsequent movie fetches to use the live API.
+9. **CSS Modules (bonus)**
+   - Convert at least one component's styles to a `.module.css` file and import it with `import styles from './Component.module.css'`.
+   - Use `styles.className` in JSX instead of string class names.
+   - Acceptance: styles apply correctly and a typo in `styles.nonExistentClass` is caught by TypeScript at compile time.
 
 ---
 
 ## Files to create/modify
 
-- `src/services/movieService.js` — upgraded with storage key, genre routing, sortMovies, onlyFavorites
-- `src/App.tsx` — BrowserRouter + Routes + theme init; remove all movie state
-- `src/pages/HomePage.tsx` — all movie/filter/modal state and handlers
-- `src/pages/AboutPage.tsx`
-- `src/pages/NotFoundPage.tsx`
-- `src/components/Header.tsx`
-- `src/components/FilterBar.tsx`
-- `src/components/StatsBanner.tsx`
-- `src/components/MovieModal.tsx`
-- `src/components/ApiConfigModal.tsx`
-
-### Dead code to remove
-
-After this session two files become unused and can be deleted:
-- `src/components/MovieList.tsx` — the movie grid is now rendered directly with `movies.map(...)` in `HomePage`
-- `src/components/SearchBar.tsx` — the search input is now inside `Header.tsx`
+- `src/context/AppContext.tsx` — context, reducer, AppProvider, useAppContext
+- `src/App.tsx` — add AppProvider wrapper; remove theme init useEffect
+- `src/pages/HomePage.tsx` — remove theme + favourites state and handlers
+- `src/components/Header.tsx` — remove 4 props; read from useAppContext
+- `src/components/MovieCard.tsx` — remove local isFavourite; read from useAppContext
+- `src/components/MovieModal.tsx` — add watchlist toggle via useAppContext
 
 ---
 
-## What the finished project has beyond what is required here
+## Verification checklist (must pass by end of session)
 
-The following features exist in `assets/finished-project` but are polish, not core session requirements. Students who finish early can implement them; they are not needed for Milestone 2:
+- Toggle theme: UI updates and theme persists on page reload.
+- Toggle favourite on a card: card shows favourite state, Header count updates, persists on reload.
+- Toggle favourite inside the modal: same result as toggling on the card.
+- `Header` no longer receives theme or favourite props from `HomePage`.
+- `useAppContext()` called outside `AppProvider` throws a clear error.
+- All routes (`/`, `/about`, `*`) remain functional.
 
-- **Search debounce** — Header debounces the search input by 300ms using `useEffect` + `setTimeout` + `useRef` to avoid firing a fetch on every keystroke
-- **Skeleton loading cards** — instead of a `<p>Loading...</p>`, the loading state renders a grid of placeholder `<div>` elements with a CSS shimmer animation
-- **Empty state** — when no movies match the active filters, a "No movies found" panel renders with a "Reset Filters & Show All" button
-- **Pagination** — `HomePage` tracks `page`, `totalPages`, and renders Previous/Next buttons that scroll to the top on click
-- **`compact` prop on MovieCard** — accepts a `compact?: boolean` prop that applies a condensed layout class for list view mode
-- **`refreshKey` state** — a counter state in `HomePage` that is incremented when `ApiConfigModal` saves a new key, forcing the `useEffect` to re-fetch
-- **CSS Modules on all components** — the finished project uses `.module.css` for every component and page, not just MovieCard and HomePage
+---
 
 ## Pro tips
 
-- The `movieService.js` upgrade (Step 1) must happen before genre filtering can be tested. Do not skip it.
-- Header intentionally receives 8 props from `HomePage`. This is prop drilling — name this to students and tell them Session 05 eliminates most of it via Context.
-- The modal vs route decision is worth a 5-minute discussion: the modal preserves filter state and scroll position on close; a `/movies/:id` route would reset everything on back-navigation. For a browse-heavy app, the modal is the better UX.
-- The `*` wildcard route must be the last `<Route>` inside `<Routes>`. React Router stops at the first match — placing `*` first would render the 404 page for every URL.
+- `useReducer` is required for Milestone 3 — it is not optional. The milestone specification explicitly requires `TOGGLE_FAVOURITE` and `SET_THEME` action types.
+- Pass helper functions (`toggleFavorite`, `toggleTheme`) as the context value, not `dispatch` directly. If the action shape changes later, only `AppProvider` needs updating — no consumer changes required.
+- `storage.js` already exists from Session 03. Do not recreate it. The reducer imports and uses it for both reads (initial state) and writes (inside each case).

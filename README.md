@@ -12,6 +12,7 @@ This branch introduces **data fetching from the TMDB API**. You will fetch a lis
 ## Prerequisites
 
 Node.js 22 or higher : https://nodejs.org
+
 - Node.js 18 or higher — https://nodejs.org
 - A free TMDB account and API key — https://www.themoviedb.org/settings/api
 
@@ -20,23 +21,28 @@ Node.js 22 or higher : https://nodejs.org
 ## Setup
 
 **1. Install dependencies**
+
 ```bash
 npm install
 ```
 
 **2. Configure environment variables**
+
 ```bash
 cp .env.example .env
 ```
+
 Open `.env` and set `VITE_TMDB_API_KEY` to your **API Read Access Token** (the long Bearer token from TMDB Settings → API).
 
 **3. Add the submission secret**
 
 Go to your repo on GitHub → **Settings → Secrets and variables → Actions → New repository secret**
+
 - Name: `SHEETS_WEBHOOK_URL`
 - Value: *(provided by your teacher via Teams)*
 
 **4. Start the dev server**
+
 ```bash
 npm run dev
 ```
@@ -132,11 +138,12 @@ git push origin milestone-1
 ```
 
 > **Important:** Tags are unique — you cannot push the same tag twice. To resubmit, delete the old tag first:
-> ```bash
-> git tag -d milestone-1
-> git push origin --delete milestone-1
-> git tag milestone-1 && git push origin milestone-1
-> ```
+
+```bash
+git tag -d milestone-1
+git push origin --delete milestone-1
+git tag milestone-1 && git push origin milestone-1
+```
 
 ---
 
