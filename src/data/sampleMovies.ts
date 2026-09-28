@@ -400,7 +400,7 @@ export const SAMPLE_MOVIES = [
   },
 ];
 
-export function getPosterUrl(path: string | null | undefined, width = "w500") {
+export const getPosterUrl = (path: string | null | undefined, width = "w500") => {
   if (!path) return getPlaceholderPoster();
   if (path.startsWith("http")) return path;
   return `https://image.tmdb.org/t/p/${width}${path}`;
