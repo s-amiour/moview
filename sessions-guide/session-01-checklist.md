@@ -1,73 +1,76 @@
-# Session 01 — Checklist (ES6 Refresher + React Introduction)
+# Session 01 — Checklist (Components, Props & State)
 
 ## Purpose
 
-- Ensure students have the modern JavaScript skills required for the course before React is introduced.
-- End the session with a first working React component so students are not starting from zero in Session 02.
+- Build the first interactive React UI: components that receive props, a shared data type, hardcoded sample data, and local state with `useState`.
+- By the end of this session students should have a working movie list with real-time search filtering and a per-card favourites toggle.
 
 ---
 
-## Part 1 — ES6 Exercises (exercises/01.js – 09.js)
+## What to implement
 
-Run these in the browser console or Node 18+ — no build step required.
+1. **Type definition**
+   - Create `src/types.ts` with the following exports:
+     - `Movie` interface: `id`, `title`, `original_title`, `overview`, `poster_path` (string | null), `backdrop_path` (string | null), `genre_ids`, `release_date`, `vote_average`, `vote_count`, `popularity`, `adult`
+     - `type SortOption = 'popularity' | 'rating' | 'release_date' | 'title'`
+     - `type ViewMode = 'grid' | 'list'`
+     - `type Theme = 'dark' | 'light'`
+   - Acceptance: `Movie` is importable and used as the prop type for `MovieCard`; the other types are used from Session 04 onward.
 
-1. **const / let and basic scoping**
-   - Short snippets showing values that are reassigned vs constant.
-   - Acceptance: explain in a comment why `const` is used for values not reassigned.
+2. **Sample data and image helpers**
+   - Create `src/data/sampleMovies.ts` (or `.js`) exporting:
+     - `SAMPLE_MOVIES` — an array of at least 5 hardcoded `Movie` objects with realistic TMDB-shaped fields
+     - `TMDB_IMAGE_BASE` — `'https://image.tmdb.org/t/p/w500'`
+     - `TMDB_BACKDROP_BASE` — `'https://image.tmdb.org/t/p/w1280'`
+     - `getPosterUrl(path, width?)` — returns the full TMDB poster URL, or a placeholder if `path` is null
+     - `getBackdropUrl(path, width?)` — returns the full TMDB backdrop URL, or a placeholder if `path` is null
+     - `getPlaceholderPoster(title?)` — returns a fallback image URL when `poster_path` is null
+     - `getPlaceholderBackdrop()` — returns a fallback backdrop URL
+   - `MovieCard` and `MovieModal` import these helpers to build image URLs — without them those components will fail to compile.
+   - Acceptance: data can be imported and rendered without a network request; image helpers return usable strings for all inputs including null.
+   - **Important:** this file stays in the project for the entire course as the offline fallback — do not delete it.
 
-2. **Arrow functions, concise bodies and object-literal returns**
-   - Build small utilities (`formatTitle`, `isHighRated`) invokable from the console.
-   - Acceptance: each function returns the expected primitive (string / boolean / array).
+3. **MovieCard component**
+   - Render title, poster image (fallback to a placeholder if `poster_path` is null), and a vote average badge.
+   - Add a local `isFavourite` state (boolean, `useState`) and a toggle button that flips it.
+   - Accept an `onClick` prop called when the card body is clicked (used in Session 04 to open the modal).
+   - Acceptance: clicking the favourite button toggles the visual state without affecting other cards; clicking the card body calls `onClick`.
 
-3. **Template literals and multi-line templates**
-   - Interpolate variables and conditionally include parts of a string.
-   - Acceptance: copy output into the console and confirm formatting.
+4. **MovieList component**
+   - Accept a `movies: Movie[]` prop and render a grid of `<MovieCard />` components.
+   - Pass a `key` prop (use `movie.id`) to each card.
+   - Acceptance: adding or removing items from the array updates the rendered list correctly.
 
-4. **Destructuring (objects and arrays)**
-   - Extract properties and nested values; use defaults for missing properties.
-   - Acceptance: no runtime errors when extracting missing properties.
+5. **SearchBar component**
+   - Controlled input that lifts its value via an `onChange` prop.
+   - Acceptance: `App` owns the `query` state; typing updates the displayed movie list in real time.
 
-5. **Spread / Rest and shallow copying**
-   - Use spread to copy arrays/objects and build modified versions.
-   - Acceptance: originals remain unchanged after spread.
+6. **App.tsx — state and prop threading**
+   - Hold `movies` (initially from `SAMPLE_MOVIES`), `query`, and a `minRating` filter in state.
+   - Derive `filteredMovies` (do not store in state — compute from `movies` + `query` + `minRating` on every render).
+   - Pass `filteredMovies` to `MovieList` and `query`/`onChange` to `SearchBar`.
+   - Acceptance: typing in `SearchBar` filters displayed cards in real time without extra state.
 
-6. **Array methods — map, filter, find, some, sort**
-   - Transform an array of movie-like objects with each method.
-   - Acceptance: functions return expected lengths and values.
-
-7. **async / await with fetch**
-   - Write an async function that fetches data from a public URL and logs the result.
-   - Acceptance: function resolves correctly and errors are caught with try/catch.
-
-8. **Optional chaining (?.) and nullish coalescing (??)**
-   - Access deeply nested properties that may be null or undefined safely.
-   - Acceptance: no TypeError thrown when a property is missing; fallback value is used.
-
----
-
-## Part 2 — First React Component
-
-9. **Project bootstrap**
-   - Confirm Vite + React is working in `starter/`.
-   - Run `npm install` then `npm run dev` and verify the dev server starts.
-   - Acceptance: browser shows the default page at `http://localhost:5173`.
-
-10. **First MovieCard component**
-    - Create `src/components/MovieCard.tsx`.
-    - Accept a `movie` prop (use the `Movie` type from `src/types.ts` or a simple inline type for now) and render the title and a poster image.
-    - Render it once in `App.tsx` with hardcoded data.
-    - Acceptance: the browser shows a movie title and image without console errors.
+7. **Minimal styles**
+   - Add basic CSS to `src/index.css` to make the card grid legible.
+   - Acceptance: grid displays responsively at common desktop and mobile widths.
 
 ---
 
 ## Files to create/modify
 
-- `src/App.tsx` — render a single `<MovieCard />` with hardcoded props
-- `src/components/MovieCard.tsx`
+- `src/types.ts` — `Movie` interface
+- `src/data/sampleMovies.ts` — `SAMPLE_MOVIES` array
+- `src/App.tsx` — state, filtering, prop threading
+- `src/components/MovieCard.tsx` — display + local `isFavourite` toggle
+- `src/components/MovieList.tsx` — renders a grid of cards
+- `src/components/SearchBar.tsx` — controlled search input
+- `src/index.css` — grid layout and card styles
 
 ---
 
 ## Pro tips
 
-- `map()` is the single most important array method for React — every list in the app is rendered with it. Make sure it is clear before Session 02.
-- Optional chaining (`?.`) is needed from Session 02 onward: `poster_path` can be `null` in TMDB data and accessing it without a guard will crash the image render.
+- `filteredMovies` should be derived from state, not stored in state. If you `useState` for the filtered list, you will have to keep it in sync manually — that is the "derived state" pitfall. Compute it inline instead.
+- The `isFavourite` toggle living locally in `MovieCard` is intentional at this stage. In Session 05 it will move into a global context. Don't jump ahead.
+- Prop drilling from `App` → `MovieList` → `MovieCard` feels manageable with 3 components. By Session 04 it will feel painful with 8+ props on `Header`. That pain motivates Session 05's Context API — name it aloud to students.

@@ -1,76 +1,72 @@
-# Session 02 — Checklist (Components, Props & State)
+# Session 02 — Checklist (Side Effects, Data Fetching & Service Layer)
 
 ## Purpose
 
-- Build the first interactive React UI: components that receive props, a shared data type, hardcoded sample data, and local state with `useState`.
-- By the end of this session students should have a working movie list with real-time search filtering and a per-card favourites toggle.
+- Replace hardcoded sample data with live API data fetched via `useEffect`.
+- Build the service layer (`movieService.js`, `storage.js`, `genres.js`) that the rest of the course builds on.
+- Introduce safe patterns: loading/error states, `AbortController` cleanup, custom hooks.
 
 ---
 
 ## What to implement
 
-1. **Type definition**
-   - Create `src/types.ts` with the following exports:
-     - `Movie` interface: `id`, `title`, `original_title`, `overview`, `poster_path` (string | null), `backdrop_path` (string | null), `genre_ids`, `release_date`, `vote_average`, `vote_count`, `popularity`, `adult`
-     - `type SortOption = 'popularity' | 'rating' | 'release_date' | 'title'`
-     - `type ViewMode = 'grid' | 'list'`
-     - `type Theme = 'dark' | 'light'`
-   - Acceptance: `Movie` is importable and used as the prop type for `MovieCard`; the other types are used from Session 04 onward.
+1. **Genre data**
+   - Create `src/data/genres.js` exporting a `GENRES` object (id → name map) and a `getGenreNames(genreIds)` helper.
+   - Acceptance: `getGenreNames([28, 12])` returns `['Action', 'Adventure']`.
 
-2. **Sample data and image helpers**
-   - Create `src/data/sampleMovies.ts` (or `.js`) exporting:
-     - `SAMPLE_MOVIES` — an array of at least 5 hardcoded `Movie` objects with realistic TMDB-shaped fields
-     - `TMDB_IMAGE_BASE` — `'https://image.tmdb.org/t/p/w500'`
-     - `TMDB_BACKDROP_BASE` — `'https://image.tmdb.org/t/p/w1280'`
-     - `getPosterUrl(path, width?)` — returns the full TMDB poster URL, or a placeholder if `path` is null
-     - `getBackdropUrl(path, width?)` — returns the full TMDB backdrop URL, or a placeholder if `path` is null
-     - `getPlaceholderPoster(title?)` — returns a fallback image URL when `poster_path` is null
-     - `getPlaceholderBackdrop()` — returns a fallback backdrop URL
-   - `MovieCard` and `MovieModal` import these helpers to build image URLs — without them those components will fail to compile.
-   - Acceptance: data can be imported and rendered without a network request; image helpers return usable strings for all inputs including null.
-   - **Important:** this file stays in the project for the entire course as the offline fallback — do not delete it.
+2. **Storage utility**
+   - Create `src/utils/storage.js` with the following functions:
+     - `getFavorites()` — reads and parses `localStorage`, returns `[]` on error
+     - `toggleFavorite(movie)` — adds or removes a movie from the stored array, returns the updated array
+     - `getTheme()` — returns `'dark'` or `'light'` from `localStorage` (default: `'dark'`)
+     - `setTheme(theme)` — writes to `localStorage` and sets `data-theme` on `document.documentElement`
+     - `getApiKey()` — returns the stored TMDB v3 API key or `''`
+     - `setApiKey(key)` — trims and stores the key
+   - Acceptance: favorites and theme persist across page reloads; `getApiKey()` returns `''` until one is set.
+   - **Important:** this file is used by every session that follows. Do not skip it.
 
-3. **MovieCard component**
-   - Render title, poster image (fallback to a placeholder if `poster_path` is null), and a vote average badge.
-   - Add a local `isFavourite` state (boolean, `useState`) and a toggle button that flips it.
-   - Accept an `onClick` prop called when the card body is clicked (used in Session 04 to open the modal).
-   - Acceptance: clicking the favourite button toggles the visual state without affecting other cards; clicking the card body calls `onClick`.
+3. **Movie service**
+   - Create `src/services/movieService.js` exporting a `movieService` object with a `fetchMovies({ search, genre, sort, onlyFavorites, page })` method.
+   - When `VITE_TMDB_API_KEY` is set: fetch from `GET /movie/popular` or `GET /search/movie` using a Bearer token header.
+   - When no key is set: return results from `SAMPLE_MOVIES` (filter locally by `search` if provided).
+   - Always return `{ results, total_pages, total_results, isLiveApi }`.
+   - Accept `genre`, `sort`, `onlyFavorites`, and `page` parameters even if they are not fully wired yet — the interface is set here and used in Session 04.
+   - Acceptance: the app shows TMDB results with a valid API key and falls back to sample data without one.
+   - **Note:** In Session 04 this service is upgraded to use `storage.getApiKey()` + `?api_key=` instead of the Bearer token, and genre/sort/onlyFavorites logic is fully implemented. Design the interface now; implement the upgrade in Session 04.
 
-4. **MovieList component**
-   - Accept a `movies: Movie[]` prop and render a grid of `<MovieCard />` components.
-   - Pass a `key` prop (use `movie.id`) to each card.
-   - Acceptance: adding or removing items from the array updates the rendered list correctly.
+4. **First fetch with useEffect**
+   - In `App.tsx`, add a `useEffect` that calls `movieService.fetchMovies()` and sets `movies`, `isLoading`, and `error` state.
+   - Acceptance: the app displays remote posters when running with a valid API key; otherwise the sample data fallback is visible.
 
-5. **SearchBar component**
-   - Controlled input that lifts its value via an `onChange` prop.
-   - Acceptance: `App` owns the `query` state; typing updates the displayed movie list in real time.
+5. **Loading and error states**
+   - Render a status message while `isLoading` is true and an error message when `error` is set.
+   - Use `try`/`catch`/`finally`; set `isLoading(false)` in `finally` so it always resets.
+   - Acceptance: network failures produce an error message and `isLoading` finishes `false`.
 
-6. **App.tsx — state and prop threading**
-   - Hold `movies` (initially from `SAMPLE_MOVIES`), `query`, and a `minRating` filter in state.
-   - Derive `filteredMovies` (do not store in state — compute from `movies` + `query` + `minRating` on every render).
-   - Pass `filteredMovies` to `MovieList` and `query`/`onChange` to `SearchBar`.
-   - Acceptance: typing in `SearchBar` filters displayed cards in real time without extra state.
+6. **AbortController cleanup**
+   - Attach a signal to the fetch call and abort it in the effect cleanup function.
+   - Acceptance: rapidly unmounting and remounting the component does not produce "Can't perform a React state update on an unmounted component" warnings.
 
-7. **Minimal styles**
-   - Add basic CSS to `src/index.css` to make the card grid legible.
-   - Acceptance: grid displays responsively at common desktop and mobile widths.
+7. **Extract useMovies hook**
+   - Move the three states (`movies`, `isLoading`, `error`) and the fetch logic into `src/hooks/useMovies.ts`.
+   - `App.tsx` should call `const { movies, isLoading, error } = useMovies()`.
+   - Acceptance: behaviour is identical after the refactor; `App.tsx` contains no `useEffect` or fetch logic.
+   - **Note:** `useMovies` is a learning exercise in custom hooks. By Session 04, `HomePage.tsx` fetches directly via `movieService` + `useEffect` without this hook. That is fine — the hook teaches the pattern; the direct approach in Session 04 is simpler to read when filtering, sorting, and pagination are added.
 
 ---
 
 ## Files to create/modify
 
-- `src/types.ts` — `Movie` interface
-- `src/data/sampleMovies.ts` — `SAMPLE_MOVIES` array
-- `src/App.tsx` — state, filtering, prop threading
-- `src/components/MovieCard.tsx` — display + local `isFavourite` toggle
-- `src/components/MovieList.tsx` — renders a grid of cards
-- `src/components/SearchBar.tsx` — controlled search input
-- `src/index.css` — grid layout and card styles
+- `src/data/genres.js` — `GENRES` map and `getGenreNames` helper
+- `src/utils/storage.js` — localStorage helpers for favorites, theme, and API key
+- `src/services/movieService.js` — TMDB fetch with sampleMovies fallback
+- `src/hooks/useMovies.ts` — encapsulates movies/isLoading/error + fetch logic
+- `src/App.tsx` — consume `useMovies()`; remove inline fetch logic
 
 ---
 
 ## Pro tips
 
-- `filteredMovies` should be derived from state, not stored in state. If you `useState` for the filtered list, you will have to keep it in sync manually — that is the "derived state" pitfall. Compute it inline instead.
-- The `isFavourite` toggle living locally in `MovieCard` is intentional at this stage. In Session 05 it will move into a global context. Don't jump ahead.
-- Prop drilling from `App` → `MovieList` → `MovieCard` feels manageable with 3 components. By Session 04 it will feel painful with 8+ props on `Header`. That pain motivates Session 05's Context API — name it aloud to students.
+- `movieService.js` and `storage.js` are not optional extras — every subsequent session depends on them. If they are not built in Session 03, Session 04 cannot be completed.
+- Put `setIsLoading(true)` at the start of the async function, not just as the initial `useState` value. If the effect ever re-runs (e.g. a refresh button is added later), the loading indicator must reappear — it won't if you rely on the initial state.
+- The `AbortError` must be caught and silently ignored — it is intentional, not a failure. Use `if (err instanceof DOMException && err.name === 'AbortError') return` inside the catch block.
