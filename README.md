@@ -39,7 +39,7 @@ Open `.env` and set `VITE_TMDB_API_KEY` to your **API Read Access Token** (the l
 Go to your repo on GitHub → **Settings → Secrets and variables → Actions → New repository secret**
 
 - Name: `SHEETS_WEBHOOK_URL`
-- Value: *(provided by your teacher via Teams)*
+- Value: *(provided by teacher via Teams)*
 
 **4. Start the dev server**
 
