@@ -78,7 +78,7 @@ const storage = {
     const favs = this.getFavorites();
     const idx = favs.findIndex(m => Number(m.id) === Number(movie.id));
     const updated = idx >= 0 ? favs.filter(m => Number(m.id) !== Number(movie.id)) : [movie, ...favs];
-    try { localStorage.setItem('cinegrid_favorites', JSON.stringify(updated)); } catch {}
+    try { localStorage.setItem('cinegrid_favorites', JSON.stringify(updated)); } catch (err) { console.error("Failed to save into localStorage", err) }
     return { isAdded: idx < 0 };
   },
   getTheme() {
