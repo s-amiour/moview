@@ -5,13 +5,13 @@ node_modules
 dist
 dist-ssr
 
-# Environment variables — never commit your API key
+# Environment
 .env
 .env.local
 .env.*.local
 
 # Editor
-.vscode/*
+.vscode/
 !.vscode/extensions.json
 .idea
 *.suo

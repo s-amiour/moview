@@ -1,6 +1,3 @@
-export const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
-export const TMDB_BACKDROP_BASE = "https://image.tmdb.org/t/p/w1280";
-
 export const SAMPLE_MOVIES = [
   {
     adult: false,
@@ -401,7 +398,7 @@ export const SAMPLE_MOVIES = [
 ];
 
 export const getPosterUrl = (path: string | null | undefined, width = "w500") => {
-  if (!path) return getPlaceholderPoster();
+  if (!path) return getPlaceholderPoster();  // <--
   if (path.startsWith("http")) return path;
   return `https://image.tmdb.org/t/p/${width}${path}`;
 }
@@ -415,6 +412,7 @@ export function getBackdropUrl(
   return `https://image.tmdb.org/t/p/${width}${path}`;
 }
 
+// !!! Default arg is always used in implementation here: NEED FIX
 export function getPlaceholderPoster(title = "Movie") {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="750" viewBox="0 0 500 750" fill="none">
     <rect width="500" height="750" fill="#18181b"/>
