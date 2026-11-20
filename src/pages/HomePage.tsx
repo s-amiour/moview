@@ -39,6 +39,11 @@ function HomeContent() {
   const closeMovieModal = useCallback(() => setSelectedMovie(null), []);
   const closeApiConfig = useCallback(() => setIsApiConfigOpen(false), []);
 
+  const pickRandomMovie = useCallback(() => {
+    if (movies.length === 0) return;
+    setSelectedMovie(movies[Math.floor(Math.random() * movies.length)]);
+  }, [movies]);
+
   return (
     <>
       <Header
@@ -47,6 +52,8 @@ function HomeContent() {
         onlyFavorites={onlyFavorites}
         onToggleFavorites={() => setOnlyFavorites((prev) => !prev)}
         onOpenApiConfig={() => setIsApiConfigOpen(true)}
+        onPickRandom={pickRandomMovie}
+        canPickRandom={!isLoading && !error && movies.length > 0}
       />
 
       <main className="main-container">
