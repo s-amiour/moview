@@ -18,7 +18,7 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
   const [isWatchlisted, setIsWatchlisted] = useState(false);
 
   const handleWatchlistClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.stopPropagation();  // Prevent event from bubbling up () to parent element(s) or capturing down to child element(s). Both actions mean triggering an element.
     setIsWatchlisted((prev) => !prev);
   };
 
