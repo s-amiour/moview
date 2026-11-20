@@ -1,5 +1,6 @@
 import type { Movie } from '../types';
 import MovieCard from './MovieCard';
+import { SAMPLE_MOVIES } from '../data/sampleMovies'; 
 
 type MovieListProps = {
   movies: Movie[];

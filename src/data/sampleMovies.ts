@@ -395,6 +395,7 @@ export function getBackdropUrl(
   return width ? `https://image.tmdb.org/t/p/${width}${path}` : `${TMDB_BACKDROP_BASE}${path}`;
 }
 
+// !!! Default arg is always used in implementation here: NEED FIX
 export function getPlaceholderPoster(title = "Movie") {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="750" viewBox="0 0 500 750" fill="none">
     <rect width="500" height="750" fill="#18181b"/>

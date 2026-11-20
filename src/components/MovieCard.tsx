@@ -13,6 +13,7 @@ type MovieCardProps = {
 };
 
 
+
 export default function MovieCard({ movie, onClick }: MovieCardProps) {
   const [isFavourite, setIsFavourite] = useState(false);
 
@@ -34,12 +35,15 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
         />
         <div className="poster-overlay">
           {/* Badges shown at top */}
+          {/* Badges shown at top */}
           <div className="card-top-badges">
+            {/* Rating */}
             {/* Rating */}
             <span className="rating-badge">
               <Star />
               {movie.vote_average.toFixed(1)}
             </span>
+            {/* Watchlist Btn */}
             <button
               className={`favorite-btn ${isFavourite ? 'is-favorite' : ''}`}
               onClick={handleFavouriteClick}
@@ -49,6 +53,8 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
               { isFavourite ? <EyeClosed /> : <Eye />}
             </button>
           </div>
+          
+          <span className="quick-view-hint">View Details</span>
           
           <span className="quick-view-hint">View Details</span>
         </div>
@@ -63,3 +69,4 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
     </article>
   );
 }
+
