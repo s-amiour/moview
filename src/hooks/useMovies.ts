@@ -9,7 +9,7 @@ export type MovieFilters = {
   onlyFavorites: boolean;
 };
 
-export function useMovies(filters: MovieFilters, favorites: Movie[] = []) {
+export function useMovies(filters: MovieFilters, reloadKey: unknown = null) {
   const { search, genre, sort, onlyFavorites } = filters;
   const [movies, setMovies] = useState<Movie[]>([]);
   const [totalResults, setTotalResults] = useState(0);
@@ -42,7 +42,7 @@ export function useMovies(filters: MovieFilters, favorites: Movie[] = []) {
 
     loadMovies();
     return () => controller.abort();
-  }, [search, genre, sort, onlyFavorites, favorites]);
+  }, [search, genre, sort, onlyFavorites, reloadKey]);
 
   return { movies, totalResults, isLiveApi, isLoading, error };
 }
