@@ -17,7 +17,7 @@ export default function HomePage() {
   const [onlyFavorites, setOnlyFavorites] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isApiConfigOpen, setIsApiConfigOpen] = useState(false);
-  const { favorites, isFavorite, toggleFavorite } = useAppContext();
+  const { favorites } = useAppContext();
 
   const { movies, totalResults, isLiveApi, isLoading, error } = useMovies(
     { search, genre, sort, onlyFavorites },
@@ -80,12 +80,7 @@ export default function HomePage() {
       </main>
 
       {selectedMovie && (
-        <MovieModal
-          movie={selectedMovie}
-          isFavorite={isFavorite(selectedMovie.id)}
-          onToggleFavorite={toggleFavorite}
-          onClose={closeMovieModal}
-        />
+        <MovieModal movie={selectedMovie} onClose={closeMovieModal} />
       )}
 
       {isApiConfigOpen && <ApiConfigModal onClose={closeApiConfig} onSave={closeApiConfig} />}
