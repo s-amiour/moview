@@ -18,6 +18,7 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
   const [isFavourite, setIsFavourite] = useState(false);
 
   const favouriteLabel = isFavourite ? 'Remove from favourites' : 'Add to favourites';
+  const year = movie.release_date.substring(0, 4);
 
   const handleFavouriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();  // Prevent event from bubbling up () to parent element(s) or capturing down to child element(s). Both actions mean triggering an element.
@@ -25,7 +26,7 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
   };
 
   return (
-    <article className="movie-card" tabIndex={0} aria-label={`${movie.title} (${movie.release_date.substring(0, 4)})`} onClick={onClick}>
+    <article className="movie-card" tabIndex={0} aria-label={`${movie.title} (${year})`} onClick={onClick}>
       {/* Poster Ref */}
       <div className="poster-wrapper">
         <img
@@ -35,9 +36,7 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
         />
         <div className="poster-overlay">
           {/* Badges shown at top */}
-          {/* Badges shown at top */}
           <div className="card-top-badges">
-            {/* Rating */}
             {/* Rating */}
             <span className="rating-badge">
               <Star />
@@ -53,16 +52,13 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
               { isFavourite ? <EyeClosed /> : <Eye />}
             </button>
           </div>
-          
-          <span className="quick-view-hint">View Details</span>
-          
           <span className="quick-view-hint">View Details</span>
         </div>
       </div>
       <div className="movie-card-info">
         <h2 className="movie-card-title">{movie.title}</h2>
         <div className="movie-card-meta">
-          <span>{movie.release_date.substring(0, 4)}</span>
+          <span>{year}</span>
           <span>{movie.vote_count} votes</span>
         </div>
       </div>
