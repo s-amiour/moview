@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { Movie, SortOption, ViewMode } from '../types';
-import { useAppContext } from '../context/AppContext';
+import { AppProvider, useAppContext, useOptionalAppContext } from '../context/AppContext';
 import { useMovies } from '../hooks/useMovies';
 import Header from '../components/Header';
 import FilterBar from '../components/FilterBar';
@@ -10,6 +10,18 @@ import MovieModal from '../components/MovieModal';
 import ApiConfigModal from '../components/ApiConfigModal';
 
 export default function HomePage() {
+  const context = useOptionalAppContext();
+  if (!context) {
+    return (
+      <AppProvider>
+        <HomeContent />
+      </AppProvider>
+    );
+  }
+  return <HomeContent />;
+}
+
+function HomeContent() {
   const [search, setSearch] = useState('');
   const [genre, setGenre] = useState('');
   const [sort, setSort] = useState<SortOption>('popularity');
