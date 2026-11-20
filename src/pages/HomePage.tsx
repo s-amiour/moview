@@ -5,7 +5,7 @@ import { useMovies } from '../hooks/useMovies';
 import Header from '../components/Header';
 import FilterBar from '../components/FilterBar';
 import StatsBanner from '../components/StatsBanner';
-import MovieCard from '../components/MovieCard';
+import MovieList from '../components/MovieList';
 import MovieModal from '../components/MovieModal';
 import ApiConfigModal from '../components/ApiConfigModal';
 
@@ -77,17 +77,8 @@ function HomeContent() {
             <p className="empty-title">Couldn&apos;t load movies</p>
             <p className="empty-text">{error}</p>
           </div>
-        ) : movies.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">!</div>
-            <p className="empty-text">No movies found.</p>
-          </div>
         ) : (
-          <div className={`movies-grid${viewMode === 'list' ? ' compact-view' : ''}`}>
-            {movies.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} onClick={() => setSelectedMovie(movie)} />
-            ))}
-          </div>
+          <MovieList movies={movies} viewMode={viewMode} onMovieClick={setSelectedMovie} />
         )}
       </main>
 
