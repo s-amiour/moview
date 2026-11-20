@@ -283,6 +283,13 @@ select {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
+.btn-icon-label:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
 .btn-icon-label.active {
   background-color: var(--bg-pill-active);
   color: #ffffff;

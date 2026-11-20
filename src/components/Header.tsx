@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Heart, Moon, Settings, Sun } from 'lucide-react';
+import { Heart, Moon, Settings, Shuffle, Sun } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import SearchBar from './SearchBar';
 
@@ -9,6 +9,8 @@ type HeaderProps = {
   onlyFavorites: boolean;
   onToggleFavorites: () => void;
   onOpenApiConfig: () => void;
+  onPickRandom?: () => void;
+  canPickRandom?: boolean;
 };
 
 export default function Header({
@@ -17,6 +19,8 @@ export default function Header({
   onlyFavorites,
   onToggleFavorites,
   onOpenApiConfig,
+  onPickRandom,
+  canPickRandom = true,
 }: HeaderProps) {
   const { theme, toggleTheme, favorites } = useAppContext();
   const navClass = ({ isActive }: { isActive: boolean }) => `nav-link${isActive ? ' active' : ''}`;
@@ -43,6 +47,19 @@ export default function Header({
         <SearchBar query={search} onChange={onSearch} />
 
         <div className="header-actions">
+          {onPickRandom && (
+            <button
+              type="button"
+              className="btn-icon-label"
+              aria-label="Open a random movie"
+              title="Open a random movie"
+              disabled={!canPickRandom}
+              onClick={onPickRandom}
+            >
+              <Shuffle size={16} />
+              Random
+            </button>
+          )}
           <button
             type="button"
             className={`btn-icon-label${onlyFavorites ? ' active' : ''}`}
