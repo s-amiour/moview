@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import type { Movie, SortOption, Theme, ViewMode } from '../types';
-import * as storage from '../utils/storage';
+import type { Movie, SortOption, ViewMode } from '../types';
+import { useAppContext } from '../context/AppContext';
 import { useMovies } from '../hooks/useMovies';
 import Header from '../components/Header';
 import FilterBar from '../components/FilterBar';
@@ -15,25 +15,14 @@ export default function HomePage() {
   const [sort, setSort] = useState<SortOption>('popularity');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [onlyFavorites, setOnlyFavorites] = useState(false);
-  const [theme, setTheme] = useState<Theme>(() => storage.getTheme());
-  const [favorites, setFavorites] = useState<Movie[]>(() => storage.getFavorites());
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isApiConfigOpen, setIsApiConfigOpen] = useState(false);
+  const { favorites } = useAppContext();
 
   const { movies, totalResults, isLiveApi, isLoading, error } = useMovies(
     { search, genre, sort, onlyFavorites },
     onlyFavorites ? favorites : null,
   );
-
-  const handleToggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    storage.setTheme(next);
-  };
-
-  const handleToggleFavorite = (movie: Movie) => {
-    setFavorites(storage.toggleFavorite(movie));
-  };
 
   const closeMovieModal = useCallback(() => setSelectedMovie(null), []);
   const closeApiConfig = useCallback(() => setIsApiConfigOpen(false), []);
@@ -45,9 +34,6 @@ export default function HomePage() {
         onSearch={setSearch}
         onlyFavorites={onlyFavorites}
         onToggleFavorites={() => setOnlyFavorites((prev) => !prev)}
-        theme={theme}
-        onToggleTheme={handleToggleTheme}
-        favCount={favorites.length}
         onOpenApiConfig={() => setIsApiConfigOpen(true)}
       />
 
@@ -94,12 +80,7 @@ export default function HomePage() {
       </main>
 
       {selectedMovie && (
-        <MovieModal
-          movie={selectedMovie}
-          isFavorite={favorites.some((fav) => fav.id === selectedMovie.id)}
-          onToggleFavorite={handleToggleFavorite}
-          onClose={closeMovieModal}
-        />
+        <MovieModal movie={selectedMovie} onClose={closeMovieModal} />
       )}
 
       {isApiConfigOpen && <ApiConfigModal onClose={closeApiConfig} onSave={closeApiConfig} />}

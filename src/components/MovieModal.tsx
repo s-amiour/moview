@@ -3,16 +3,18 @@ import { Heart, X, Youtube } from 'lucide-react';
 import type { Movie } from '../types';
 import { getBackdropUrl, getPlaceholderPoster, getPosterUrl } from '../data/sampleMovies';
 import { getGenreNames } from '../data/genres';
+import { useAppContext } from '../context/AppContext';
 import Star from './icons/Star';
 
 type MovieModalProps = {
   movie: Movie;
-  isFavorite: boolean;
-  onToggleFavorite: (movie: Movie) => void;
   onClose: () => void;
 };
 
-export default function MovieModal({ movie, isFavorite, onToggleFavorite, onClose }: MovieModalProps) {
+export default function MovieModal({ movie, onClose }: MovieModalProps) {
+  const { isFavorite, toggleFavorite } = useAppContext();
+  const isFavourite = isFavorite(movie.id);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -86,9 +88,14 @@ export default function MovieModal({ movie, isFavorite, onToggleFavorite, onClos
             </div>
 
             <div className="modal-footer-actions">
-              <button type="button" className="btn-primary" onClick={() => onToggleFavorite(movie)}>
-                <Heart size={16} fill={isFavorite ? 'currentColor' : 'none'} />
-                {isFavorite ? 'Remove from Favourites' : 'Add to Favourites'}
+              <button
+                type="button"
+                className="btn-primary"
+                aria-pressed={isFavourite}
+                onClick={() => toggleFavorite(movie)}
+              >
+                <Heart size={16} fill={isFavourite ? 'currentColor' : 'none'} />
+                {isFavourite ? 'Remove from Favourites' : 'Add to Favourites'}
               </button>
               <a href={trailerUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">
                 <Youtube size={16} />
