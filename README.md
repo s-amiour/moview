@@ -32,7 +32,7 @@ npm install
 cp .env.example .env
 ```
 
-Open `.env` and set `VITE_TMDB_API_KEY` to your **API Read Access Token** (the long Bearer token from TMDB Settings → API).
+The TMDB key is not stored in `.env`. Start the app, click **API Key** in the header and paste your **API Key** (the short v3 key from TMDB Settings → API). It is saved in your browser's localStorage. Without a key the app shows the built-in sample movies.
 
 **3. Add the submission secret**
 
@@ -53,12 +53,14 @@ App runs at http://localhost:5173
 
 ## TMDB API
 
-All requests are authenticated with a Bearer token in the `Authorization` header.
+All requests are authenticated with the v3 API key in the `api_key` query parameter.
 
-### Endpoint used in this branch
+### Endpoints used in this branch
 
 ```
-GET https://api.themoviedb.org/3/movie/popular
+GET https://api.themoviedb.org/3/movie/popular?api_key=...&page=1
+GET https://api.themoviedb.org/3/search/movie?api_key=...&query=...&page=1
+GET https://api.themoviedb.org/3/discover/movie?api_key=...&with_genres=...&page=1
 ```
 
 | Parameter  | Type    | Default | Description         |
