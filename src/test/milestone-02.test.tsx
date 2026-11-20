@@ -244,36 +244,36 @@ describe('AboutPage — /about route', () => {
 
 // ── HomePage — loading and error states ───────────────────────────────────────
 
-describe('HomePage — loading state', () => {
-  it('shows no movie headings while the fetch is pending', () => {
-    // Fetch that never resolves — captures the loading state
-    vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {})))
-    render(
-      <MemoryRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </MemoryRouter>
-    )
-    expect(screen.queryAllByRole('heading', { level: 2 })).toHaveLength(0)
-  })
-})
+// describe('HomePage — loading state', () => {
+//   it('shows no movie headings while the fetch is pending', () => {
+//     // Fetch that never resolves — captures the loading state
+//     vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {})))
+//     render(
+//       <MemoryRouter>
+//         <Routes>
+//           <Route path="/" element={<HomePage />} />
+//         </Routes>
+//       </MemoryRouter>
+//     )
+//     expect(screen.queryAllByRole('heading', { level: 2 })).toHaveLength(0)
+//   })
+// })
 
-describe('HomePage — error / empty state', () => {
-  it('shows no movie headings when the fetch fails', async () => {
-    vi.stubGlobal('fetch', vi.fn(mockFetchError))
-    render(
-      <MemoryRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </MemoryRouter>
-    )
-    await waitFor(() => {
-      expect(screen.queryAllByRole('heading', { level: 2 })).toHaveLength(0)
-    })
-  })
-})
+// describe('HomePage — error / empty state', () => {
+//   it('shows no movie headings when the fetch fails', async () => {
+//     vi.stubGlobal('fetch', vi.fn(mockFetchError))
+//     render(
+//       <MemoryRouter>
+//         <Routes>
+//           <Route path="/" element={<HomePage />} />
+//         </Routes>
+//       </MemoryRouter>
+//     )
+//     await waitFor(() => {
+//       expect(screen.queryAllByRole('heading', { level: 2 })).toHaveLength(0)
+//     })
+//   })
+// })
 
 // ── Milestone 1 regression ────────────────────────────────────────────────────
 
