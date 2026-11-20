@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Movie } from '../types';
-import { getPosterUrl } from '../data/sampleMovies';
-import { getGenreNames } from '../data/genres';
+import type { Movie } from '../types';
+import { getPosterUrl, getPlaceholderPoster } from '../data/sampleMovies';
 // Icons
 import Star from './icons/Star';
 import EyeClosed from './icons/EyeClosed';
@@ -15,19 +14,21 @@ type MovieCardProps = {
 
 
 export default function MovieCard({ movie, onClick }: MovieCardProps) {
-  const [isWatchlisted, setIsWatchlisted] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false);
 
-  const handleWatchlistClick = (e: React.MouseEvent) => {
+  const favouriteLabel = isFavourite ? 'Remove from favourites' : 'Add to favourites';
+
+  const handleFavouriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();  // Prevent event from bubbling up () to parent element(s) or capturing down to child element(s). Both actions mean triggering an element.
-    setIsWatchlisted((prev) => !prev);
+    setIsFavourite((prev) => !prev);
   };
 
   return (
-    <article className="movie-card" tabIndex={0} aria-label={`${movie.title} (${movie.release_date?.substring(0, 4)})`} onClick={onClick}>
+    <article className="movie-card" tabIndex={0} aria-label={`${movie.title} (${movie.release_date.substring(0, 4)})`} onClick={onClick}>
       {/* Poster Ref */}
       <div className="poster-wrapper">
         <img
-          src={getPosterUrl(movie.poster_path)}
+          src={movie.poster_path ? getPosterUrl(movie.poster_path) : getPlaceholderPoster(movie.title)}
           alt={movie.title}
           className="poster-img"
         />
@@ -37,16 +38,15 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
             {/* Rating */}
             <span className="rating-badge">
               <Star />
-              {movie.vote_average?.toFixed(1) || 'N/A'}
+              {movie.vote_average.toFixed(1)}
             </span>
-            {/* Watchlist Btn */}
             <button
-              className={`favorite-btn ${isWatchlisted ? 'is-favorite' : ''}`}
-              onClick={handleWatchlistClick}
-              aria-label={isWatchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
-              title={isWatchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
+              className={`favorite-btn ${isFavourite ? 'is-favorite' : ''}`}
+              onClick={handleFavouriteClick}
+              aria-label={favouriteLabel}
+              title={favouriteLabel}
             >
-              { isWatchlisted ? <EyeClosed /> : <Eye />}
+              { isFavourite ? <EyeClosed /> : <Eye />}
             </button>
           </div>
           
@@ -56,11 +56,8 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
       <div className="movie-card-info">
         <h2 className="movie-card-title">{movie.title}</h2>
         <div className="movie-card-meta">
-          <span>{movie.release_date?.substring(0, 4) ?? ''}</span>
-          <span>{movie.vote_count ?? 'N/A'} votes</span>
-        </div>
-        <div className="movie-card-tags">
-          { getGenreNames(movie.genre_ids).map(genre => <span key={genre} className='genre-tag'>{genre}</span>) }
+          <span>{movie.release_date.substring(0, 4)}</span>
+          <span>{movie.vote_count} votes</span>
         </div>
       </div>
     </article>
