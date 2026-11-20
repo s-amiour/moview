@@ -3,11 +3,16 @@ import type { Movie } from '../types';
 import { movieService } from '../services/movieService';
 
 export function useMovies() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const isLiveApi = movieService.isLiveApi();
+  const [movies, setMovies] = useState<Movie[]>(() =>
+    isLiveApi ? [] : movieService.getSampleMovies().results,
+  );
+  const [isLoading, setIsLoading] = useState(isLiveApi);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!isLiveApi) return;
+
     const controller = new AbortController();
 
     const loadMovies = async () => {
@@ -26,7 +31,7 @@ export function useMovies() {
 
     loadMovies();
     return () => controller.abort();
-  }, []);
+  }, [isLiveApi]);
 
   return { movies, isLoading, error };
 }

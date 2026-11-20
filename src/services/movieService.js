@@ -50,6 +50,14 @@ async function fetchTmdbMovies({ apiKey, search, page, signal }) {
 }
 
 export const movieService = {
+  isLiveApi() {
+    return Boolean(getEnvApiKey());
+  },
+
+  getSampleMovies(search = '') {
+    return fetchSampleMovies(search);
+  },
+
   async fetchMovies(
     { search = '', genre = '', sort = 'popularity', onlyFavorites = false, page = 1 } = {},
     { signal } = {},
