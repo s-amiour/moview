@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
-import { Heart, Moon, Search, Settings, Sun, X } from 'lucide-react';
+import { Heart, Moon, Settings, Sun } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
+import SearchBar from './SearchBar';
 
 type HeaderProps = {
   search: string;
@@ -39,27 +40,7 @@ export default function Header({
           </NavLink>
         </nav>
 
-        <div className="header-search">
-          <div className="search-input-wrapper">
-            <Search className="search-icon" aria-hidden="true" />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search movies..."
-              aria-label="Search movies"
-              value={search}
-              onChange={(e) => onSearch(e.target.value)}
-            />
-            <button
-              type="button"
-              className="search-clear-btn"
-              aria-label="Clear search"
-              onClick={() => onSearch('')}
-            >
-              <X size={14} />
-            </button>
-          </div>
-        </div>
+        <SearchBar query={search} onChange={onSearch} />
 
         <div className="header-actions">
           <button
