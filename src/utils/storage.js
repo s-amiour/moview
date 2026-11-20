@@ -1,7 +1,7 @@
 const KEYS = {
-  favorites: 'moview:favorites',
-  theme: 'moview:theme',
-  apiKey: 'moview:tmdb-api-key',
+  favorites: 'cinegrid_favorites',
+  theme: 'cinegrid_theme',
+  apiKey: 'cinegrid_tmdb_api_key',
 };
 
 function read(key) {
