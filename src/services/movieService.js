@@ -54,18 +54,26 @@ function buildUrl(apiKey, { search, genre, page }) {
 }
 
 export const movieService = {
+  getLocalMovies({ search = '', genre = '', sort = 'popularity', onlyFavorites = false } = {}) {
+    if (onlyFavorites) {
+      return localResult(sortMovies(filterLocally(storage.getFavorites(), search, ''), sort));
+    }
+    if (!storage.getApiKey()) {
+      return localResult(sortMovies(filterLocally(SAMPLE_MOVIES, search, genre), sort));
+    }
+    return null;
+  },
+
   async fetchMovies(
     { search = '', genre = '', sort = 'popularity', onlyFavorites = false, page = 1 } = {},
     { signal } = {},
   ) {
-    if (onlyFavorites) {
-      return localResult(sortMovies(filterLocally(storage.getFavorites(), search, ''), sort));
+    const local = this.getLocalMovies({ search, genre, sort, onlyFavorites });
+    if (local) {
+      return local;
     }
 
     const apiKey = storage.getApiKey();
-    if (!apiKey) {
-      return localResult(sortMovies(filterLocally(SAMPLE_MOVIES, search, genre), sort));
-    }
 
     const response = await fetch(buildUrl(apiKey, { search, genre, page }), { signal });
     if (!response.ok) {

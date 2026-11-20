@@ -16,8 +16,11 @@ export function useMovies(filters: MovieFilters, reloadKey: unknown = null) {
   const [isLiveApi, setIsLiveApi] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const localData = movieService.getLocalMovies({ search, genre, sort, onlyFavorites });
+  const isLocal = localData !== null;
 
   useEffect(() => {
+    if (isLocal) return;
     const controller = new AbortController();
 
     const loadMovies = async () => {
@@ -42,7 +45,17 @@ export function useMovies(filters: MovieFilters, reloadKey: unknown = null) {
 
     loadMovies();
     return () => controller.abort();
-  }, [search, genre, sort, onlyFavorites, reloadKey]);
+  }, [search, genre, sort, onlyFavorites, reloadKey, isLocal]);
+
+  if (localData) {
+    return {
+      movies: localData.results,
+      totalResults: localData.total_results,
+      isLiveApi: false,
+      isLoading: false,
+      error: null,
+    };
+  }
 
   return { movies, totalResults, isLiveApi, isLoading, error };
 }
