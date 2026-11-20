@@ -1066,3 +1066,19 @@ select {
 .page-text {
   color: var(--text-muted);
 }
+
+/* API Config Modal */
+.api-config-dialog {
+  max-width: 480px;
+}
+
+.api-config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px;
+}
+
+.api-config-input {
+  padding: 12px 14px;
+}
