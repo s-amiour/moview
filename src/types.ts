@@ -15,7 +15,7 @@ export interface Movie {
     video?: boolean
 }
 
-export type SortOption = 'popularity' | 'rating' | 'release_date' | 'title';
+export type SortOption = 'popularity' | 'vote_average' | 'release_date' | 'title';
 export type ViewMode = 'grid' | 'list';
 export type Theme = 'dark' | 'light';
 

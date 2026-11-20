@@ -7,6 +7,5 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     globals: true,
-    env: { VITE_TMDB_API_KEY: "" },
   },
 });

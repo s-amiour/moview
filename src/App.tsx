@@ -5,16 +5,16 @@ import SearchBar from './components/SearchBar';
 import MovieList from './components/MovieList';
 
 export default function App() {
-  const { movies, isLoading, error } = useMovies();
   const [query, setQuery] = useState('');
   const [minRating, setMinRating] = useState(0);
+  const { movies, isLoading, error } = useMovies({
+    search: query,
+    genre: '',
+    sort: 'popularity',
+    onlyFavorites: false,
+  });
 
-  const normalizedQuery = query.trim().toLowerCase();
-  const filteredMovies = movies.filter(
-    (movie) =>
-      movie.title.toLowerCase().includes(normalizedQuery) &&
-      movie.vote_average >= minRating,
-  );
+  const filteredMovies = movies.filter((movie) => movie.vote_average >= minRating);
 
   return (
     <div className="app-layout">
