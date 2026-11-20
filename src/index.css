@@ -319,58 +319,6 @@ select {
   background-color: var(--bg-card-hover);
 }
 
-/* Stats Banner */
-.stats-banner {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin: 28px 0 24px;
-}
-
-.stat-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  transition: transform var(--transition-fast);
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-}
-
-.stat-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius-md);
-  background-color: var(--bg-pill);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-value {
-  font-size: 1.25rem;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-.stat-label {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
 /* Filter Bar */
 .filter-bar {
   display: flex;
