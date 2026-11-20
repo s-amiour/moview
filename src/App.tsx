@@ -1,34 +1,49 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import NotFoundPage from './pages/NotFoundPage';
+import { useState } from 'react';
+import type { Movie } from './types';
+import { SAMPLE_MOVIES } from './data/sampleMovies';
+import NavBar from './components/NavBar';
+import SearchBar from './components/SearchBar';
+import MovieList from './components/MovieList';
 
 export default function App() {
-  return (
-    <BrowserRouter>
-      <div className="app-layout">
-        <header className="site-header">
-          <div className="header-inner">
-            <div className="brand-logo">
-              <div className="logo-dot"></div>
-              <h1 className="logo-text" style={{ fontSize: 'inherit', margin: 0 }}>
-                CineGrid
-              </h1>
-            </div>
-            
-            <nav className="header-actions">
-              <Link to="/" className="btn-icon-label">Home</Link>
-              <Link to="/about" className="btn-icon-label">About</Link>
-            </nav>
-          </div>
-        </header>
+  const [movies] = useState<Movie[]>(SAMPLE_MOVIES);
+  const [query, setQuery] = useState('');
+  const [minRating, setMinRating] = useState(0);
 
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredMovies = movies.filter(
+    (movie) =>
+      movie.title.toLowerCase().includes(normalizedQuery) &&
+      movie.vote_average >= minRating,
+  );
+
+  return (
+    <div className="app-layout">
+      <NavBar />
+
+      <main className="main-container">
+        <div className="filter-bar" style={{ marginTop: '24px' }}>
+          <SearchBar query={query} onChange={setQuery} />
+
+          <div className="filter-actions-right">
+            <div className="sort-select-wrapper">
+              <select
+                className="sort-select"
+                aria-label="Minimum rating"
+                value={minRating}
+                onChange={(e) => setMinRating(Number(e.target.value))}
+              >
+                <option value={0}>All Ratings</option>
+                <option value={6}>6+ Stars</option>
+                <option value={7}>7+ Stars</option>
+                <option value={8}>8+ Stars</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <MovieList movies={filteredMovies} />
+      </main>
+    </div>
   );
 }

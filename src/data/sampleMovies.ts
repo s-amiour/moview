@@ -1,7 +1,9 @@
-export const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
-export const TMDB_BACKDROP_BASE = "https://image.tmdb.org/t/p/w1280";
+import type { Movie } from '../types';
 
-export const SAMPLE_MOVIES = [
+export const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+export const TMDB_BACKDROP_BASE = 'https://image.tmdb.org/t/p/w1280';
+
+export const SAMPLE_MOVIES: Movie[] = [
   {
     adult: false,
     backdrop_path: "/qeQJx07rK2xm8SD2sJxFKhE7gs0.jpg",
@@ -15,7 +17,6 @@ export const SAMPLE_MOVIES = [
     popularity: 1146.6141,
     poster_path: "/iPOn6DinuVyLY17YM9mKuPofV08.jpg",
     release_date: "2026-07-29",
-    softcore: false,
     video: false,
     vote_average: 7.864,
     vote_count: 1568,
@@ -33,7 +34,6 @@ export const SAMPLE_MOVIES = [
     popularity: 819.0049,
     poster_path: "/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg",
     release_date: "2026-07-15",
-    softcore: false,
     video: false,
     vote_average: 7.993,
     vote_count: 2639,
@@ -51,7 +51,6 @@ export const SAMPLE_MOVIES = [
     popularity: 643.3186,
     poster_path: "/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
     release_date: "2021-12-15",
-    softcore: false,
     video: false,
     vote_average: 7.938,
     vote_count: 22613,
@@ -69,7 +68,6 @@ export const SAMPLE_MOVIES = [
     popularity: 383.9155,
     poster_path: "/6JU7E8Vv2M11egkctWVOScxWR75.jpg",
     release_date: "2026-08-06",
-    softcore: false,
     video: false,
     vote_average: 6.845,
     vote_count: 465,
@@ -87,7 +85,6 @@ export const SAMPLE_MOVIES = [
     popularity: 331.3084,
     poster_path: "/nz7i42yhLIJ4ve9JKgM6NthoLHO.jpg",
     release_date: "2026-06-24",
-    softcore: false,
     video: false,
     vote_average: 7.044,
     vote_count: 410,
@@ -105,7 +102,6 @@ export const SAMPLE_MOVIES = [
     popularity: 287.6622,
     poster_path: "/1QCWdqzTfh2x9UylVpspIU6QTuM.jpg",
     release_date: "2026-06-24",
-    softcore: false,
     video: false,
     vote_average: 6.744,
     vote_count: 1780,
@@ -123,7 +119,6 @@ export const SAMPLE_MOVIES = [
     popularity: 294.9183,
     poster_path: "/sfQtVlIHljToOwYjhe21KPGzZWK.jpg",
     release_date: "2026-06-17",
-    softcore: false,
     video: false,
     vote_average: 7.419,
     vote_count: 811,
@@ -141,7 +136,6 @@ export const SAMPLE_MOVIES = [
     popularity: 292.9874,
     poster_path: "/wC69brhk65GvrgNQdqLRUqtneUH.jpg",
     release_date: "2026-05-21",
-    softcore: false,
     video: false,
     vote_average: 8.129,
     vote_count: 465,
@@ -159,7 +153,6 @@ export const SAMPLE_MOVIES = [
     popularity: 270.5983,
     poster_path: "/uRxrNXQWkHoENm3nwVOZDYSCx2F.jpg",
     release_date: "2026-07-07",
-    softcore: false,
     video: false,
     vote_average: 7.898,
     vote_count: 958,
@@ -177,7 +170,6 @@ export const SAMPLE_MOVIES = [
     popularity: 258.7221,
     poster_path: "/92Tsfx7SFafOqWsotvrlJbHyehd.jpg",
     release_date: "2026-06-18",
-    softcore: false,
     video: false,
     vote_average: 6.345,
     vote_count: 193,
@@ -195,7 +187,6 @@ export const SAMPLE_MOVIES = [
     popularity: 246.4077,
     poster_path: "/AnJ8IQJI23hNpYXVNaythu061Ru.jpg",
     release_date: "2026-06-10",
-    softcore: false,
     video: false,
     vote_average: 7.453,
     vote_count: 2682,
@@ -213,7 +204,6 @@ export const SAMPLE_MOVIES = [
     popularity: 262.6154,
     poster_path: "/bRwnj8WEKBCvmfeUNOukJPwB43K.jpg",
     release_date: "2026-05-13",
-    softcore: false,
     video: false,
     vote_average: 8.228,
     vote_count: 4572,
@@ -231,7 +221,6 @@ export const SAMPLE_MOVIES = [
     popularity: 229.5025,
     poster_path: "/zKVgiv5qHCvCLT4A2ymJi5QeXDH.jpg",
     release_date: "2026-07-08",
-    softcore: false,
     video: false,
     vote_average: 6.0,
     vote_count: 192,
@@ -249,7 +238,6 @@ export const SAMPLE_MOVIES = [
     popularity: 220.5926,
     poster_path: "/c24sv2weTHPsmDa7jEMN0m2P3RT.jpg",
     release_date: "2017-07-05",
-    softcore: false,
     video: false,
     vote_average: 7.332,
     vote_count: 23588,
@@ -267,7 +255,6 @@ export const SAMPLE_MOVIES = [
     popularity: 188.0818,
     poster_path: "/m1dXI1997D7lj6Sh0Z2DI26o2nI.jpg",
     release_date: "2026-03-12",
-    softcore: false,
     video: false,
     vote_average: 7.8,
     vote_count: 84,
@@ -285,7 +272,6 @@ export const SAMPLE_MOVIES = [
     popularity: 185.1919,
     poster_path: "/lH8k9uCWYn2b2gsYleqYBDPbWa8.jpg",
     release_date: "2026-07-29",
-    softcore: false,
     video: false,
     vote_average: 6.536,
     vote_count: 573,
@@ -303,7 +289,6 @@ export const SAMPLE_MOVIES = [
     popularity: 176.1763,
     poster_path: "/rhGx6E3qRNMgj3i5su2oukNHwIQ.jpg",
     release_date: "2026-05-27",
-    softcore: false,
     video: false,
     vote_average: 7.101,
     vote_count: 2694,
@@ -321,7 +306,6 @@ export const SAMPLE_MOVIES = [
     popularity: 179.2709,
     poster_path: "/bNErActDctl6cdUGw9pnjSCmyhQ.jpg",
     release_date: "2026-07-31",
-    softcore: false,
     video: false,
     vote_average: 6.473,
     vote_count: 92,
@@ -339,7 +323,6 @@ export const SAMPLE_MOVIES = [
     popularity: 169.7288,
     poster_path: "/nXdAh5vUwERL4WGVMaee8RoDEAS.jpg",
     release_date: "2002-05-01",
-    softcore: false,
     video: false,
     vote_average: 7.342,
     vote_count: 21090,
@@ -357,7 +340,6 @@ export const SAMPLE_MOVIES = [
     popularity: 1234.5,
     poster_path: "/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
     release_date: "2022-12-14",
-    softcore: false,
     video: false,
     vote_average: 7.7,
     vote_count: 7535,
@@ -375,7 +357,6 @@ export const SAMPLE_MOVIES = [
     popularity: 987.6,
     poster_path: "/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg",
     release_date: "2023-03-22",
-    softcore: false,
     video: false,
     vote_average: 8.0,
     vote_count: 1211,
@@ -393,28 +374,28 @@ export const SAMPLE_MOVIES = [
     popularity: 165.1631,
     poster_path: "/xBHCRB7zLIW41w8QskfwJhm32YF.jpg",
     release_date: "2026-07-03",
-    softcore: false,
     video: false,
     vote_average: 6.233,
     vote_count: 15,
   },
 ];
 
-export const getPosterUrl = (path: string | null | undefined, width = "w500") => {
+export const getPosterUrl = (path: string | null | undefined, width?: string) => {
   if (!path) return getPlaceholderPoster();
   if (path.startsWith("http")) return path;
-  return `https://image.tmdb.org/t/p/${width}${path}`;
+  return width ? `https://image.tmdb.org/t/p/${width}${path}` : `${TMDB_IMAGE_BASE}${path}`;
 }
 
 export function getBackdropUrl(
   path: string | null | undefined,
-  width = "w1280",
+  width?: string,
 ) {
   if (!path) return getPlaceholderBackdrop();
   if (path.startsWith("http")) return path;
-  return `https://image.tmdb.org/t/p/${width}${path}`;
+  return width ? `https://image.tmdb.org/t/p/${width}${path}` : `${TMDB_BACKDROP_BASE}${path}`;
 }
 
+// !!! Default arg is always used in implementation here: NEED FIX
 export function getPlaceholderPoster(title = "Movie") {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="750" viewBox="0 0 500 750" fill="none">
     <rect width="500" height="750" fill="#18181b"/>
@@ -431,7 +412,7 @@ export function getPlaceholderBackdrop() {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
     <rect width="1280" height="720" fill="#18181b"/>
     <circle cx="640" cy="360" r="100" fill="#27272a"/>
-    <text x="640" y="520" fill="#71717a" font-family="sans-serif" font-size="20" text-anchor="middle">CineGrid Motion Picture</text>
+    <text x="640" y="520" fill="#71717a" font-family="sans-serif" font-size="20" text-anchor="middle">Moview</text>
   </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
