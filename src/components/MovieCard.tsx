@@ -1,29 +1,33 @@
 import type { Movie } from '../types';
-import { useAppContext } from '../context/AppContext';
+import { useOptionalAppContext } from '../context/AppContext';
 import { getPosterUrl, getPlaceholderPoster } from '../data/sampleMovies';
 // Icons
 import Star from './icons/Star';
 import EyeClosed from './icons/EyeClosed';
 import Eye from './icons/Eye';
 
-// Standard to define shape of props
-type MovieCardProps = {
+// Define component prop shape
+interface MovieCardProps {
   movie: Movie;
   onClick?: () => void;
-};
-
+}
 
 
 export default function MovieCard({ movie, onClick }: MovieCardProps) {
-  const { isFavorite, toggleFavorite } = useAppContext();
-  const isFavourite = isFavorite(movie.id);
+  const context = useOptionalAppContext();
+  const [localFavourite, setLocalFavourite] = useState(false);
+  const isFavourite = context ? context.isFavorite(movie.id) : localFavourite;
 
   const favouriteLabel = isFavourite ? 'Remove from favourites' : 'Add to favourites';
   const year = movie.release_date.substring(0, 4);
 
   const handleFavouriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();  // Prevent event from bubbling up () to parent element(s) or capturing down to child element(s). Both actions mean triggering an element.
-    toggleFavorite(movie);
+    e.stopPropagation();  // Prevent event from bubbling up to parent element(s) or capturing down to child element(s). Both actions mean triggering an element.
+    if (context) {
+      context.toggleFavorite(movie);
+    } else {
+      setLocalFavourite((prev) => !prev);
+    }
   };
 
   return (

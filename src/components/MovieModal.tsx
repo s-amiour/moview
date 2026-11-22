@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
-import { Heart, X, Youtube } from 'lucide-react';
+import { Heart, X } from 'lucide-react';
 import type { Movie } from '../types';
 import { getBackdropUrl, getPlaceholderPoster, getPosterUrl } from '../data/sampleMovies';
 import { getGenreNames } from '../data/genres';
 import { useAppContext } from '../context/AppContext';
 import Star from './icons/Star';
 
-type MovieModalProps = {
+interface MovieModalProps {
   movie: Movie;
   onClose: () => void;
-};
+}
 
 export default function MovieModal({ movie, onClose }: MovieModalProps) {
   const { isFavorite, toggleFavorite } = useAppContext();
@@ -98,7 +98,7 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
                 {isFavourite ? 'Remove from Favourites' : 'Add to Favourites'}
               </button>
               <a href={trailerUrl} target="_blank" rel="noopener noreferrer" className="btn-secondary">
-                <Youtube size={16} />
+                
                 Watch Trailer
               </a>
             </div>

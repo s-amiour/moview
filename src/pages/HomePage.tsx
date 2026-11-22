@@ -1,15 +1,27 @@
 import { useCallback, useState } from 'react';
 import type { Movie, SortOption, ViewMode } from '../types';
-import { useAppContext } from '../context/AppContext';
+import { AppProvider, useAppContext, useOptionalAppContext } from '../context/AppContext';
 import { useMovies } from '../hooks/useMovies';
 import Header from '../components/Header';
 import FilterBar from '../components/FilterBar';
 import StatsBanner from '../components/StatsBanner';
-import MovieCard from '../components/MovieCard';
+import MovieList from '../components/MovieList';
 import MovieModal from '../components/MovieModal';
 import ApiConfigModal from '../components/ApiConfigModal';
 
 export default function HomePage() {
+  const context = useOptionalAppContext();
+  if (!context) {
+    return (
+      <AppProvider>
+        <HomeContent />
+      </AppProvider>
+    );
+  }
+  return <HomeContent />;
+}
+
+function HomeContent() {
   const [search, setSearch] = useState('');
   const [genre, setGenre] = useState('');
   const [sort, setSort] = useState<SortOption>('popularity');
@@ -27,14 +39,19 @@ export default function HomePage() {
   const closeMovieModal = useCallback(() => setSelectedMovie(null), []);
   const closeApiConfig = useCallback(() => setIsApiConfigOpen(false), []);
 
+  const pickRandomMovie = useCallback(() => {
+    if (movies.length === 0) return;
+    setSelectedMovie(movies[Math.floor(Math.random() * movies.length)]);
+  }, [movies]);
+
   return (
     <>
       <Header
-        search={search}
-        onSearch={setSearch}
         onlyFavorites={onlyFavorites}
         onToggleFavorites={() => setOnlyFavorites((prev) => !prev)}
         onOpenApiConfig={() => setIsApiConfigOpen(true)}
+        onPickRandom={pickRandomMovie}
+        canPickRandom={!isLoading && !error && movies.length > 0}
       />
 
       <main className="main-container">
@@ -49,6 +66,8 @@ export default function HomePage() {
         <FilterBar
           genre={genre}
           onGenreChange={setGenre}
+          search={search}
+          onSearch={setSearch}
           sort={sort}
           onSortChange={setSort}
           viewMode={viewMode}
@@ -65,17 +84,8 @@ export default function HomePage() {
             <p className="empty-title">Couldn&apos;t load movies</p>
             <p className="empty-text">{error}</p>
           </div>
-        ) : movies.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">!</div>
-            <p className="empty-text">No movies found.</p>
-          </div>
         ) : (
-          <div className={`movies-grid${viewMode === 'list' ? ' compact-view' : ''}`}>
-            {movies.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} onClick={() => setSelectedMovie(movie)} />
-            ))}
-          </div>
+          <MovieList movies={movies} viewMode={viewMode} onMovieClick={setSelectedMovie} />
         )}
       </main>
 

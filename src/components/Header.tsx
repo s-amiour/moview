@@ -1,21 +1,21 @@
 import { NavLink } from 'react-router-dom';
-import { Heart, Moon, Search, Settings, Sun, X } from 'lucide-react';
+import { Heart, Moon, Settings, Shuffle, Sun } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
-type HeaderProps = {
-  search: string;
-  onSearch: (search: string) => void;
+interface HeaderProps {
   onlyFavorites: boolean;
   onToggleFavorites: () => void;
   onOpenApiConfig: () => void;
-};
+  onPickRandom?: () => void;
+  canPickRandom?: boolean;
+}
 
 export default function Header({
-  search,
-  onSearch,
   onlyFavorites,
   onToggleFavorites,
   onOpenApiConfig,
+  onPickRandom,
+  canPickRandom = true,
 }: HeaderProps) {
   const { theme, toggleTheme, favorites } = useAppContext();
   const navClass = ({ isActive }: { isActive: boolean }) => `nav-link${isActive ? ' active' : ''}`;
@@ -39,29 +39,20 @@ export default function Header({
           </NavLink>
         </nav>
 
-        <div className="header-search">
-          <div className="search-input-wrapper">
-            <Search className="search-icon" aria-hidden="true" />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search movies..."
-              aria-label="Search movies"
-              value={search}
-              onChange={(e) => onSearch(e.target.value)}
-            />
+        <div className="header-actions">
+          {onPickRandom && (
             <button
               type="button"
-              className="search-clear-btn"
-              aria-label="Clear search"
-              onClick={() => onSearch('')}
+              className="btn-icon-label"
+              aria-label="Open a random movie"
+              title="Open a random movie"
+              disabled={!canPickRandom}
+              onClick={onPickRandom}
             >
-              <X size={14} />
+              <Shuffle size={16} />
+              Random
             </button>
-          </div>
-        </div>
-
-        <div className="header-actions">
+          )}
           <button
             type="button"
             className={`btn-icon-label${onlyFavorites ? ' active' : ''}`}

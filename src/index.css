@@ -32,6 +32,11 @@
     "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Stepped layout widths. They only change at the six breakpoints at the
+     bottom of this file, so nothing resizes or reflows between them. */
+  --container: 1536px; /* max width of the header and main content boxes */
+  --modal-width: 820px;
 }
 
 [data-theme="light"] {
@@ -102,9 +107,9 @@ select {
 
 .main-container {
   width: 100%;
-  max-width: 1360px;
+  max-width: var(--container);
   margin: 0 auto;
-  padding: 0 24px 48px;
+  padding: 0 0.5rem 48px;
   flex: 1;
 }
 
@@ -117,16 +122,27 @@ select {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-color);
-  padding: 16px 24px;
+  padding: 16px 0;
 }
 
+/* Header: explicit grid areas per breakpoint, same width as the content */
 .header-inner {
-  max-width: 1360px;
+  width: 100%;
+  max-width: var(--container);
   margin: 0 auto;
-  display: flex;
+  padding: 0 0.5rem;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  grid-template-areas: "brand nav search actions";
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  column-gap: 20px;
+  row-gap: 12px;
+}
+
+/* No search box in the header: logo left, nav centred, actions right */
+.header-inner:not(:has(> .header-search)) {
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-areas: "brand nav actions";
 }
 
 .brand-logo {
@@ -139,7 +155,9 @@ select {
   color: var(--text-main);
   cursor: pointer;
   user-select: none;
-  flex-shrink: 0;
+  grid-area: brand;
+  justify-self: start;
+  white-space: nowrap;
 }
 
 .logo-dot {
@@ -168,9 +186,14 @@ select {
 
 /* Navigation */
 .header-nav {
+  grid-area: nav;
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.header-inner:not(:has(> .header-search)) .header-nav {
+  justify-self: center;
 }
 
 .nav-link {
@@ -180,6 +203,7 @@ select {
   font-weight: 600;
   color: var(--text-muted);
   text-decoration: none;
+  white-space: nowrap;
   transition: all var(--transition-fast);
 }
 
@@ -195,7 +219,13 @@ select {
 /* Search */
 .header-search {
   position: relative;
-  flex: 1;
+  width: 100%;
+  min-width: 0;
+}
+
+.header-inner > .header-search {
+  grid-area: search;
+  justify-self: center;
   max-width: 440px;
 }
 
@@ -259,6 +289,8 @@ select {
 
 /* Header Actions */
 .header-actions {
+  grid-area: actions;
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -275,7 +307,18 @@ select {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-main);
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all var(--transition-fast);
+}
+
+.btn-icon-label svg {
+  flex-shrink: 0;
+}
+
+.btn-icon-label:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-icon-label:hover {
@@ -311,6 +354,7 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   color: var(--text-main);
   transition: all var(--transition-fast);
 }
@@ -319,13 +363,71 @@ select {
   background-color: var(--bg-card-hover);
 }
 
-/* Filter Bar */
-.filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+/* Stats Banner */
+.stats-banner {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
+  margin: 28px 0 24px;
+}
+
+.stat-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: transform var(--transition-fast);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Filter Bar */
+/* Row 1: genre chips (scroll sideways). Row 2: search (when it lives in the
+   filter bar) on the left, sort + view toggle on the right. */
+.filter-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "chips chips"
+    "search actions";
+  align-items: center;
+  gap: 14px 16px;
   margin-bottom: 28px;
   background-color: var(--bg-card);
   padding: 14px 18px;
@@ -341,7 +443,13 @@ select {
   padding-bottom: 4px;
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
-  max-width: 100%;
+  grid-area: chips;
+  min-width: 0;
+}
+
+.filter-bar > .header-search {
+  grid-area: search;
+  max-width: 440px;
 }
 
 .genre-pill {
@@ -369,10 +477,11 @@ select {
 }
 
 .filter-actions-right {
+  grid-area: actions;
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-left: auto;
 }
 
 .sort-select-wrapper {
@@ -411,12 +520,12 @@ select {
   display: flex;
   align-items: center;
   background-color: var(--bg-pill);
-  padding: 3px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
 }
 
 .view-btn {
+  flex: 1 1 0;
   padding: 6px 10px;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
@@ -435,7 +544,7 @@ select {
 /* Movie Grid */
 .movies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 24px;
 }
 
@@ -629,6 +738,7 @@ select {
 
 .movies-grid.compact-view .movie-card-info {
   justify-content: center;
+  min-width: 0;
   gap: 8px;
 }
 
@@ -696,8 +806,8 @@ select {
 
 .modal-dialog {
   position: relative;
-  width: 100%;
-  max-width: 820px;
+  width: var(--modal-width);
+  max-width: 100%;
   max-height: 90vh;
   background-color: var(--bg-modal);
   border-radius: var(--radius-xl);
@@ -779,6 +889,7 @@ select {
   flex-direction: column;
   gap: 16px;
   flex: 1;
+  min-width: 0;
   padding-top: 60px;
 }
 
@@ -823,6 +934,7 @@ select {
 .modal-footer-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   margin-top: 8px;
 }
@@ -933,61 +1045,6 @@ select {
   }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .header-inner {
-    flex-wrap: wrap;
-  }
-
-  .header-search {
-    order: 3;
-    max-width: 100%;
-    margin-top: 8px;
-    flex-basis: 100%;
-  }
-
-  .modal-body {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin-top: -60px;
-    padding: 0 20px 24px;
-  }
-
-  .modal-poster {
-    width: 140px;
-  }
-
-  .modal-content-details {
-    padding-top: 0;
-    align-items: center;
-  }
-
-  .modal-meta-row,
-  .modal-footer-actions {
-    justify-content: center;
-  }
-
-  .movies-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 16px;
-  }
-
-  .brand-badge {
-    display: none;
-  }
-}
-
-@media (max-width: 480px) {
-  .btn-icon-label span:not(.count-badge) {
-    display: none;
-  }
-  .movies-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-}
-
 /* Pages */
 .page-content {
   display: flex;
@@ -1017,7 +1074,7 @@ select {
 
 /* API Config Modal */
 .api-config-dialog {
-  max-width: 480px;
+  width: 480px;
 }
 
 .api-config-form {
@@ -1029,4 +1086,345 @@ select {
 
 .api-config-input {
   padding: 12px 14px;
+}
+
+/* ==========================================================================
+   Responsive: stepped, desktop-first.
+
+   Every layout below is explicit (fixed widths, fixed column counts, named
+   grid areas), so the page holds still while the window is resized and only
+   changes in one move when the viewport edge reaches the content's border,
+   which is exactly where the next breakpoint sits.
+
+   Max width of the header and main content boxes at each step
+   (--container). Each box snaps to the next breakpoint value and keeps
+   0.5rem of padding inside, like a Tailwind container:
+     > 1536px   1536px
+     2xl  1536  1280px
+     xl   1280  1024px
+     lg   1024   768px
+     md    768   640px
+     sm    640   475px
+     xs    475   100%
+   ========================================================================== */
+
+/* 2xl */
+@media (max-width: 1536px) {
+  :root {
+    --container: 1280px;
+  }
+
+  .movies-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* xl */
+@media (max-width: 1280px) {
+  :root {
+    --container: 1024px;
+  }
+
+  .movies-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* lg */
+@media (max-width: 1024px) {
+  :root {
+    --container: 768px;
+    --modal-width: 720px;
+  }
+
+  /* Header with a search box: search drops to its own full-width row */
+  .header-inner {
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand nav . actions"
+      "search search search search";
+  }
+
+  .header-inner > .header-search {
+    max-width: none;
+    justify-self: stretch;
+  }
+
+  .stats-banner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .movies-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* md */
+@media (max-width: 768px) {
+  :root {
+    --container: 640px;
+    --modal-width: 592px;
+  }
+
+  .brand-badge {
+    display: none;
+  }
+
+  /* Header buttons become icon-only (the text stays for screen readers,
+     the favourites count stays visible) */
+  .header-actions {
+    gap: 8px;
+  }
+
+  .header-actions .btn-icon-label {
+    font-size: 0;
+    gap: 6px;
+    height: 40px;
+    padding: 0 11px;
+  }
+
+  .movies-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .modal-backdrop-hero {
+    height: 260px;
+  }
+
+  .modal-body {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: -60px;
+    padding: 0 24px 24px;
+    gap: 20px;
+  }
+
+  .modal-poster {
+    width: 140px;
+  }
+
+  .modal-content-details {
+    padding-top: 0;
+    align-items: center;
+  }
+
+  .modal-meta-row,
+  .modal-footer-actions,
+  .modal-content-details .movie-genres-tags {
+    justify-content: center;
+  }
+}
+
+/* sm */
+@media (max-width: 640px) {
+  :root {
+    --container: 475px;
+    --modal-width: 443px;
+  }
+
+  /* Row 1: logo + actions. Row 2: nav (+ search when it is in the header) */
+  .header-inner,
+  .header-inner:not(:has(> .header-search)) {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "brand actions"
+      "nav search";
+    column-gap: 12px;
+  }
+
+  .header-inner:not(:has(> .header-search)) .header-nav {
+    justify-self: start;
+  }
+
+  .nav-link {
+    padding: 8px 10px;
+  }
+
+  .stats-banner {
+    gap: 12px;
+    margin: 20px 0 20px;
+  }
+
+  .stat-card {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .stat-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+  }
+
+  .filter-bar {
+    padding: 12px 14px;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .movies-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .movies-grid.compact-view .movie-card {
+    height: 108px;
+  }
+
+  .movies-grid.compact-view .poster-wrapper {
+    width: 72px;
+  }
+
+  .movies-grid.compact-view .movie-card-title {
+    font-size: 1rem;
+  }
+
+  .api-config-dialog {
+    width: var(--modal-width);
+  }
+
+  .modal-backdrop-hero {
+    height: 220px;
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* xs */
+@media (max-width: 475px) {
+  :root {
+    --container: 100%;
+    --modal-width: 100%;
+  }
+
+  .site-header {
+    padding: 12px 0;
+  }
+
+  .header-inner,
+  .header-inner:not(:has(> .header-search)) {
+    row-gap: 10px;
+  }
+
+  .brand-logo {
+    font-size: 1.05rem;
+    gap: 6px;
+  }
+
+  .header-actions {
+    gap: 4px;
+  }
+
+  .header-actions .btn-icon-label {
+    height: 34px;
+    padding: 0 8px;
+    gap: 5px;
+  }
+
+  .header-actions .count-badge {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+  }
+
+  .theme-toggle-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Stat cards: icon above the text so long values keep their room */
+  .stat-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .stat-value {
+    font-size: 0.95rem;
+  }
+
+  /* Filter bar: one item per row, sort left and view toggle right */
+  .filter-bar {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "chips"
+      "actions";
+  }
+
+  .filter-bar:has(> .header-search) {
+    grid-template-areas:
+      "chips"
+      "search"
+      "actions";
+  }
+
+  .filter-bar > .header-search {
+    max-width: none;
+  }
+
+  .filter-actions-right {
+    justify-self: stretch;
+    justify-content: space-between;
+  }
+
+  .movies-grid {
+    gap: 12px;
+  }
+
+  .movie-card-info {
+    padding: 10px;
+  }
+
+  .movie-card-title {
+    font-size: 0.88rem;
+  }
+
+  .pagination-container {
+    gap: 8px;
+  }
+
+  .modal-overlay {
+    padding: 16px;
+  }
+
+  .modal-backdrop-hero {
+    height: 180px;
+  }
+
+  .modal-body {
+    padding: 0 16px 20px;
+  }
+
+  .modal-poster {
+    width: 120px;
+  }
+
+  .modal-footer-actions > * {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .api-config-form {
+    padding: 24px 20px;
+  }
+
+  .page-content {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .page-code {
+    font-size: 3rem;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+  }
 }

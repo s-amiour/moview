@@ -15,6 +15,7 @@ export interface Movie {
     video?: boolean
 }
 
+// enum possible types
 export type SortOption = 'popularity' | 'vote_average' | 'release_date' | 'title';
 export type ViewMode = 'grid' | 'list';
 export type Theme = 'dark' | 'light';
