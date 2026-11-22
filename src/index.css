@@ -1,5 +1,5 @@
 /* Pure CSS Design System */
- 
+
 :root {
   --bg-main: #0a0c10;
   --bg-card: #161b22;
@@ -10,7 +10,7 @@
   --bg-pill-active: #3b82f6;
   --border-color: #30363d;
   --border-focus: #3b82f6;
- 
+
   --text-main: #f0f6fc;
   --text-muted: #8b949e;
   --text-dim: #6e7681;
@@ -18,27 +18,27 @@
   --accent-hover: #2563eb;
   --accent-glow: rgba(59, 130, 246, 0.25);
   --star-gold: #fbbf24;
- 
+
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
- 
+
   --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
   --shadow-hover: 0 20px 40px -15px rgba(59, 130, 246, 0.2);
   --shadow-modal: 0 25px 60px -15px rgba(0, 0, 0, 0.9);
- 
+
   --font-sans:
     "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
- 
+
   /* Stepped layout widths. They only change at the six breakpoints at the
      bottom of this file, so nothing resizes or reflows between them. */
-  --container: 1360px; /* header, main content and footer share this width */
+  --container: 1536px; /* max width of the header and main content boxes */
   --modal-width: 820px;
 }
- 
+
 [data-theme="light"] {
   --bg-main: #f6f8fa;
   --bg-card: #ffffff;
@@ -49,7 +49,7 @@
   --bg-pill-active: #3b82f6;
   --border-color: #d0d7de;
   --border-focus: #3b82f6;
- 
+
   --text-main: #1f2328;
   --text-muted: #656d76;
   --text-dim: #8c959f;
@@ -57,7 +57,7 @@
   --shadow-hover: 0 18px 35px -10px rgba(59, 130, 246, 0.18);
   --shadow-modal: 0 20px 50px -10px rgba(0, 0, 0, 0.25);
 }
- 
+
 /* Reset & Base */
 *,
 *::before,
@@ -66,7 +66,7 @@
   margin: 0;
   padding: 0;
 }
- 
+
 html,
 body {
   min-height: 100vh;
@@ -80,7 +80,7 @@ body {
     background-color var(--transition-normal),
     color var(--transition-normal);
 }
- 
+
 a {
   color: inherit;
   text-decoration: none;
@@ -97,21 +97,22 @@ select {
   font-family: inherit;
   color: inherit;
 }
- 
+
 /* Layout */
 .app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
- 
+
 .main-container {
-  width: var(--container);
+  width: 100%;
+  max-width: var(--container);
   margin: 0 auto;
-  padding: 0 0 48px;
+  padding: 0 0.5rem 48px;
   flex: 1;
 }
- 
+
 /* Header */
 .site-header {
   position: sticky;
@@ -123,11 +124,13 @@ select {
   border-bottom: 1px solid var(--border-color);
   padding: 16px 0;
 }
- 
+
 /* Header: explicit grid areas per breakpoint, same width as the content */
 .header-inner {
-  width: var(--container);
+  width: 100%;
+  max-width: var(--container);
   margin: 0 auto;
+  padding: 0 0.5rem;
   display: grid;
   grid-template-columns: auto auto minmax(0, 1fr) auto;
   grid-template-areas: "brand nav search actions";
@@ -135,13 +138,13 @@ select {
   column-gap: 20px;
   row-gap: 12px;
 }
- 
+
 /* No search box in the header: logo left, nav centred, actions right */
 .header-inner:not(:has(> .header-search)) {
   grid-template-columns: 1fr auto 1fr;
   grid-template-areas: "brand nav actions";
 }
- 
+
 .brand-logo {
   display: flex;
   align-items: center;
@@ -156,7 +159,7 @@ select {
   justify-self: start;
   white-space: nowrap;
 }
- 
+
 .logo-dot {
   width: 8px;
   height: 8px;
@@ -164,12 +167,12 @@ select {
   border-radius: 50%;
   flex-shrink: 0;
 }
- 
+
 .logo-text {
   font-weight: 800;
   letter-spacing: -0.03em;
 }
- 
+
 .brand-badge {
   font-size: 0.65rem;
   font-weight: 700;
@@ -180,7 +183,7 @@ select {
   color: var(--accent);
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
- 
+
 /* Navigation */
 .header-nav {
   grid-area: nav;
@@ -188,11 +191,11 @@ select {
   align-items: center;
   gap: 4px;
 }
- 
+
 .header-inner:not(:has(> .header-search)) .header-nav {
   justify-self: center;
 }
- 
+
 .nav-link {
   padding: 8px 12px;
   border-radius: var(--radius-sm);
@@ -203,35 +206,35 @@ select {
   white-space: nowrap;
   transition: all var(--transition-fast);
 }
- 
+
 .nav-link:hover {
   color: var(--text-main);
 }
- 
+
 .nav-link.active {
   color: var(--text-main);
   background-color: var(--bg-pill);
 }
- 
+
 /* Search */
 .header-search {
   position: relative;
   width: 100%;
   min-width: 0;
 }
- 
+
 .header-inner > .header-search {
   grid-area: search;
   justify-self: center;
   max-width: 440px;
 }
- 
+
 .search-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
- 
+
 .search-icon {
   position: absolute;
   left: 14px;
@@ -240,7 +243,7 @@ select {
   color: var(--text-muted);
   pointer-events: none;
 }
- 
+
 .search-input {
   width: 100%;
   padding: 10px 38px 10px 42px;
@@ -250,14 +253,14 @@ select {
   font-size: 0.9rem;
   transition: all var(--transition-fast);
 }
- 
+
 .search-input:focus {
   outline: none;
   border-color: var(--border-focus);
   box-shadow: 0 0 0 3px var(--accent-glow);
   background-color: var(--bg-card-hover);
 }
- 
+
 .search-clear-btn {
   position: absolute;
   right: 12px;
@@ -273,17 +276,17 @@ select {
   transition: all var(--transition-fast);
   font-size: 0.75rem;
 }
- 
+
 .search-input:not(:placeholder-shown) ~ .search-clear-btn {
   opacity: 1;
   visibility: visible;
 }
- 
+
 .search-clear-btn:hover {
   background-color: var(--border-color);
   color: var(--text-main);
 }
- 
+
 /* Header Actions */
 .header-actions {
   grid-area: actions;
@@ -292,7 +295,7 @@ select {
   align-items: center;
   gap: 10px;
 }
- 
+
 .btn-icon-label {
   display: flex;
   align-items: center;
@@ -308,22 +311,27 @@ select {
   flex-shrink: 0;
   transition: all var(--transition-fast);
 }
- 
+
 .btn-icon-label svg {
   flex-shrink: 0;
 }
- 
+
+.btn-icon-label:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .btn-icon-label:hover {
   background-color: var(--bg-card-hover);
   border-color: rgba(255, 255, 255, 0.15);
 }
- 
+
 .btn-icon-label.active {
   background-color: var(--bg-pill-active);
   color: #ffffff;
   border-color: var(--accent);
 }
- 
+
 .count-badge {
   display: inline-flex;
   align-items: center;
@@ -336,7 +344,7 @@ select {
   font-size: 0.75rem;
   font-weight: 700;
 }
- 
+
 .theme-toggle-btn {
   width: 40px;
   height: 40px;
@@ -350,11 +358,11 @@ select {
   color: var(--text-main);
   transition: all var(--transition-fast);
 }
- 
+
 .theme-toggle-btn:hover {
   background-color: var(--bg-card-hover);
 }
- 
+
 /* Stats Banner */
 .stats-banner {
   display: grid;
@@ -362,7 +370,7 @@ select {
   gap: 16px;
   margin: 28px 0 24px;
 }
- 
+
 .stat-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -373,11 +381,11 @@ select {
   gap: 14px;
   transition: transform var(--transition-fast);
 }
- 
+
 .stat-card:hover {
   transform: translateY(-2px);
 }
- 
+
 .stat-icon {
   width: 42px;
   height: 42px;
@@ -389,26 +397,26 @@ select {
   color: var(--accent);
   flex-shrink: 0;
 }
- 
+
 .stat-info {
   display: flex;
   flex-direction: column;
   min-width: 0;
   overflow-wrap: anywhere;
 }
- 
+
 .stat-value {
   font-size: 1.25rem;
   font-weight: 800;
   line-height: 1.2;
 }
- 
+
 .stat-label {
   font-size: 0.78rem;
   color: var(--text-muted);
   font-weight: 500;
 }
- 
+
 /* Filter Bar */
 /* Row 1: genre chips (scroll sideways). Row 2: search (when it lives in the
    filter bar) on the left, sort + view toggle on the right. */
@@ -426,7 +434,7 @@ select {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
 }
- 
+
 .genre-pills-scroll {
   display: flex;
   align-items: center;
@@ -438,12 +446,12 @@ select {
   grid-area: chips;
   min-width: 0;
 }
- 
+
 .filter-bar > .header-search {
   grid-area: search;
   max-width: 440px;
 }
- 
+
 .genre-pill {
   white-space: nowrap;
   padding: 6px 14px;
@@ -455,19 +463,19 @@ select {
   border: 1px solid transparent;
   transition: all var(--transition-fast);
 }
- 
+
 .genre-pill:hover {
   color: var(--text-main);
   background-color: var(--bg-card-hover);
 }
- 
+
 .genre-pill.active {
   background-color: var(--bg-pill-active);
   color: #ffffff;
   border-color: var(--accent);
   box-shadow: 0 4px 12px var(--accent-glow);
 }
- 
+
 .filter-actions-right {
   grid-area: actions;
   justify-self: end;
@@ -475,13 +483,13 @@ select {
   align-items: center;
   gap: 12px;
 }
- 
+
 .sort-select-wrapper {
   position: relative;
   display: flex;
   align-items: center;
 }
- 
+
 .sort-select {
   appearance: none;
   background-color: var(--bg-pill);
@@ -493,12 +501,12 @@ select {
   color: var(--text-main);
   cursor: pointer;
 }
- 
+
 .sort-select:focus {
   outline: none;
   border-color: var(--border-focus);
 }
- 
+
 .sort-select-wrapper::after {
   content: "▾";
   position: absolute;
@@ -507,16 +515,15 @@ select {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
- 
+
 .view-toggle-group {
   display: flex;
   align-items: center;
   background-color: var(--bg-pill);
-  padding: 3px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
 }
- 
+
 .view-btn {
   padding: 6px 10px;
   border-radius: var(--radius-sm);
@@ -526,25 +533,25 @@ select {
   justify-content: center;
   transition: all var(--transition-fast);
 }
- 
+
 .view-btn.active {
   background-color: var(--bg-card);
   color: var(--text-main);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
- 
+
 /* Movie Grid */
 .movies-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 24px;
 }
- 
+
 .movies-grid.compact-view {
   grid-template-columns: 1fr;
   gap: 14px;
 }
- 
+
 /* Movie Card */
 .movie-card {
   position: relative;
@@ -560,7 +567,7 @@ select {
     border-color var(--transition-normal);
   cursor: pointer;
 }
- 
+
 .movie-card:hover {
   transform: translateY(-5px);
   box-shadow:
@@ -568,7 +575,7 @@ select {
     0 0 0 1px var(--accent-glow);
   border-color: var(--accent);
 }
- 
+
 .poster-wrapper {
   position: relative;
   width: 100%;
@@ -576,18 +583,18 @@ select {
   background-color: #12151c;
   overflow: hidden;
 }
- 
+
 .poster-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
- 
+
 .movie-card:hover .poster-img {
   transform: scale(1.05);
 }
- 
+
 .poster-overlay {
   position: absolute;
   inset: 0;
@@ -604,17 +611,17 @@ select {
   justify-content: space-between;
   padding: 14px;
 }
- 
+
 .movie-card:hover .poster-overlay {
   opacity: 1;
 }
- 
+
 .card-top-badges {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
- 
+
 .rating-badge {
   display: inline-flex;
   align-items: center;
@@ -628,13 +635,13 @@ select {
   color: var(--star-gold);
   border: 1px solid rgba(251, 191, 36, 0.3);
 }
- 
+
 .rating-badge svg {
   width: 13px;
   height: 13px;
   fill: var(--star-gold);
 }
- 
+
 .favorite-btn {
   width: 34px;
   height: 34px;
@@ -648,19 +655,19 @@ select {
   justify-content: center;
   transition: all var(--transition-fast);
 }
- 
+
 .favorite-btn:hover {
   transform: scale(1.15);
   background: var(--accent);
   border-color: var(--accent);
 }
- 
+
 .favorite-btn.is-favorite {
   background: var(--accent);
   color: #ffffff;
   border-color: var(--accent);
 }
- 
+
 .quick-view-hint {
   align-self: center;
   background-color: var(--accent);
@@ -671,7 +678,7 @@ select {
   border-radius: 20px;
   box-shadow: 0 4px 12px var(--accent-glow);
 }
- 
+
 .movie-card-info {
   padding: 14px;
   display: flex;
@@ -679,7 +686,7 @@ select {
   gap: 6px;
   flex: 1;
 }
- 
+
 .movie-card-title {
   font-size: 0.95rem;
   font-weight: 700;
@@ -690,7 +697,7 @@ select {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
- 
+
 .movie-card-meta {
   display: flex;
   align-items: center;
@@ -698,14 +705,14 @@ select {
   font-size: 0.78rem;
   color: var(--text-muted);
 }
- 
+
 .movie-genres-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
   margin-top: 4px;
 }
- 
+
 .genre-tag {
   font-size: 0.68rem;
   font-weight: 600;
@@ -714,31 +721,31 @@ select {
   background-color: var(--bg-pill);
   color: var(--text-muted);
 }
- 
+
 /* Compact List View */
 .movies-grid.compact-view .movie-card {
   flex-direction: row;
   height: 120px;
 }
- 
+
 .movies-grid.compact-view .poster-wrapper {
   width: 90px;
   aspect-ratio: auto;
   height: 100%;
   flex-shrink: 0;
 }
- 
+
 .movies-grid.compact-view .movie-card-info {
   justify-content: center;
   min-width: 0;
   gap: 8px;
 }
- 
+
 .movies-grid.compact-view .movie-card-title {
   font-size: 1.1rem;
   -webkit-line-clamp: 1;
 }
- 
+
 /* Pagination */
 .pagination-container {
   display: flex;
@@ -747,7 +754,7 @@ select {
   gap: 12px;
   margin-top: 40px;
 }
- 
+
 .page-btn {
   padding: 8px 16px;
   border-radius: var(--radius-md);
@@ -758,23 +765,23 @@ select {
   color: var(--text-main);
   transition: all var(--transition-fast);
 }
- 
+
 .page-btn:hover:not(:disabled) {
   background-color: var(--bg-card-hover);
   border-color: var(--accent);
 }
- 
+
 .page-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
- 
+
 .page-info {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-muted);
 }
- 
+
 /* Modal */
 .modal-overlay {
   position: fixed;
@@ -790,12 +797,12 @@ select {
   visibility: hidden;
   transition: all var(--transition-normal);
 }
- 
+
 .modal-overlay.active {
   opacity: 1;
   visibility: visible;
 }
- 
+
 .modal-dialog {
   position: relative;
   width: var(--modal-width);
@@ -809,11 +816,11 @@ select {
   transform: scale(0.95) translateY(10px);
   transition: transform var(--transition-normal);
 }
- 
+
 .modal-overlay.active .modal-dialog {
   transform: scale(1) translateY(0);
 }
- 
+
 .modal-close-btn {
   position: absolute;
   top: 16px;
@@ -832,12 +839,12 @@ select {
   transition: all var(--transition-fast);
   font-size: 1rem;
 }
- 
+
 .modal-close-btn:hover {
   background: var(--accent);
   border-color: var(--accent);
 }
- 
+
 .modal-backdrop-hero {
   position: relative;
   width: 100%;
@@ -845,7 +852,7 @@ select {
   background-size: cover;
   background-position: center;
 }
- 
+
 .modal-backdrop-hero::after {
   content: "";
   position: absolute;
@@ -857,7 +864,7 @@ select {
     transparent 100%
   );
 }
- 
+
 .modal-body {
   position: relative;
   margin-top: -120px;
@@ -865,7 +872,7 @@ select {
   display: flex;
   gap: 28px;
 }
- 
+
 .modal-poster {
   width: 180px;
   aspect-ratio: 2 / 3;
@@ -875,7 +882,7 @@ select {
   border: 2px solid var(--border-color);
   flex-shrink: 0;
 }
- 
+
 .modal-content-details {
   display: flex;
   flex-direction: column;
@@ -884,52 +891,53 @@ select {
   min-width: 0;
   padding-top: 60px;
 }
- 
+
 .modal-title {
   font-size: 1.8rem;
   font-weight: 800;
   line-height: 1.25;
 }
- 
+
 .modal-original-title {
   color: var(--text-muted);
   font-size: 0.9rem;
   margin-top: -10px;
 }
- 
+
 .modal-meta-row {
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
 }
- 
+
 .modal-meta-item {
   font-weight: 600;
   font-size: 0.88rem;
   color: var(--text-muted);
 }
- 
+
 .modal-overview {
   font-size: 0.95rem;
   color: var(--text-muted);
   line-height: 1.6;
 }
- 
+
 .modal-overview-heading {
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-main);
   margin-bottom: 6px;
 }
- 
+
 .modal-footer-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   margin-top: 8px;
 }
- 
+
 /* Buttons */
 .btn-primary {
   display: inline-flex;
@@ -947,12 +955,12 @@ select {
   cursor: pointer;
   font-family: inherit;
 }
- 
+
 .btn-primary:hover {
   background-color: var(--accent-hover);
   transform: translateY(-2px);
 }
- 
+
 .btn-secondary {
   display: inline-flex;
   align-items: center;
@@ -969,11 +977,11 @@ select {
   font-family: inherit;
   text-decoration: none;
 }
- 
+
 .btn-secondary:hover {
   background-color: var(--bg-card-hover);
 }
- 
+
 /* Empty State */
 .empty-state {
   text-align: center;
@@ -983,7 +991,7 @@ select {
   align-items: center;
   gap: 16px;
 }
- 
+
 .empty-icon {
   width: 64px;
   height: 64px;
@@ -994,7 +1002,7 @@ select {
   justify-content: center;
   color: var(--text-muted);
 }
- 
+
 .empty-title {
   font-size: 1.2rem;
   font-weight: 700;
@@ -1003,7 +1011,7 @@ select {
   color: var(--text-muted);
   max-width: 400px;
 }
- 
+
 /* Skeleton Loaders */
 .skeleton-card {
   background-color: var(--bg-card);
@@ -1013,7 +1021,7 @@ select {
   overflow: hidden;
   border: 1px solid var(--border-color);
 }
- 
+
 .skeleton-card::after {
   content: "";
   position: absolute;
@@ -1026,7 +1034,7 @@ select {
   );
   animation: skeleton-sweep 1.5s infinite;
 }
- 
+
 @keyframes skeleton-sweep {
   0% {
     transform: translateX(-100%);
@@ -1035,7 +1043,7 @@ select {
     transform: translateX(100%);
   }
 }
- 
+
 /* Pages */
 .page-content {
   display: flex;
@@ -1046,87 +1054,88 @@ select {
   padding-bottom: 64px;
   max-width: 720px;
 }
- 
+
 .page-code {
   font-size: 4rem;
   font-weight: 800;
   line-height: 1;
   color: var(--accent);
 }
- 
+
 .page-title {
   font-size: 2rem;
   font-weight: 800;
 }
- 
+
 .page-text {
   color: var(--text-muted);
 }
- 
+
 /* API Config Modal */
 .api-config-dialog {
   width: 480px;
 }
- 
+
 .api-config-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 32px;
 }
- 
+
 .api-config-input {
   padding: 12px 14px;
 }
- 
+
 /* ==========================================================================
    Responsive: stepped, desktop-first.
- 
+
    Every layout below is explicit (fixed widths, fixed column counts, named
    grid areas), so the page holds still while the window is resized and only
    changes in one move when the viewport edge reaches the content's border,
    which is exactly where the next breakpoint sits.
- 
-   Width of the header, the main content and the footer at each step
-   (--container), with the side space it leaves:
-     > 1536px   1360px
-     2xl  1536  1232px  (1280 - 2 x 24px)
-     xl   1280   976px  (1024 - 2 x 24px)
-     lg   1024   720px  ( 768 - 2 x 24px)
-     md    768   592px  ( 640 - 2 x 24px)
-     sm    640   443px  ( 475 - 2 x 16px)
-     xs    475   full width minus 2 x 16px (the only fluid step)
+
+   Max width of the header and main content boxes at each step
+   (--container). Each box snaps to the next breakpoint value and keeps
+   0.5rem of padding inside, like a Tailwind container:
+     > 1536px   1536px
+     2xl  1536  1280px
+     xl   1280  1024px
+     lg   1024   768px
+     md    768   640px
+     sm    640   475px
+     xs    475   100%
    ========================================================================== */
- 
+
 /* 2xl */
 @media (max-width: 1536px) {
   :root {
-    --container: 1232px;
+    --container: 1280px;
   }
- 
+
   .movies-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
- 
+
 /* xl */
 @media (max-width: 1280px) {
   :root {
-    --container: 976px;
+    --container: 1024px;
   }
- 
+
   .movies-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
- 
+
 /* lg */
 @media (max-width: 1024px) {
   :root {
-    --container: 720px;
+    --container: 768px;
     --modal-width: 720px;
   }
- 
+
   /* Header with a search box: search drops to its own full-width row */
   .header-inner {
     grid-template-columns: auto auto minmax(0, 1fr) auto;
@@ -1134,54 +1143,54 @@ select {
       "brand nav . actions"
       "search search search search";
   }
- 
+
   .header-inner > .header-search {
     max-width: none;
     justify-self: stretch;
   }
- 
+
   .stats-banner {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
- 
+
   .movies-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
- 
+
 /* md */
 @media (max-width: 768px) {
   :root {
-    --container: 592px;
+    --container: 640px;
     --modal-width: 592px;
   }
- 
+
   .brand-badge {
     display: none;
   }
- 
+
   /* Header buttons become icon-only (the text stays for screen readers,
      the favourites count stays visible) */
   .header-actions {
     gap: 8px;
   }
- 
+
   .header-actions .btn-icon-label {
     font-size: 0;
     gap: 6px;
     height: 40px;
     padding: 0 11px;
   }
- 
+
   .movies-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
   }
- 
+
   .modal-backdrop-hero {
     height: 260px;
   }
- 
+
   .modal-body {
     flex-direction: column;
     align-items: center;
@@ -1190,30 +1199,30 @@ select {
     padding: 0 24px 24px;
     gap: 20px;
   }
- 
+
   .modal-poster {
     width: 140px;
   }
- 
+
   .modal-content-details {
     padding-top: 0;
     align-items: center;
   }
- 
+
   .modal-meta-row,
   .modal-footer-actions,
   .modal-content-details .movie-genres-tags {
     justify-content: center;
   }
 }
- 
+
 /* sm */
 @media (max-width: 640px) {
   :root {
-    --container: 443px;
+    --container: 475px;
     --modal-width: 443px;
   }
- 
+
   /* Row 1: logo + actions. Row 2: nav (+ search when it is in the header) */
   .header-inner,
   .header-inner:not(:has(> .header-search)) {
@@ -1223,123 +1232,123 @@ select {
       "nav search";
     column-gap: 12px;
   }
- 
+
   .header-inner:not(:has(> .header-search)) .header-nav {
     justify-self: start;
   }
- 
+
   .nav-link {
     padding: 8px 10px;
   }
- 
+
   .stats-banner {
     gap: 12px;
     margin: 20px 0 20px;
   }
- 
+
   .stat-card {
     padding: 12px 14px;
     gap: 10px;
   }
- 
+
   .stat-icon {
     width: 34px;
     height: 34px;
   }
- 
+
   .stat-value {
     font-size: 1rem;
   }
- 
+
   .filter-bar {
     padding: 12px 14px;
     gap: 12px;
     margin-bottom: 20px;
   }
- 
+
   .movies-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
   }
- 
+
   .movies-grid.compact-view .movie-card {
     height: 108px;
   }
- 
+
   .movies-grid.compact-view .poster-wrapper {
     width: 72px;
   }
- 
+
   .movies-grid.compact-view .movie-card-title {
     font-size: 1rem;
   }
- 
+
   .api-config-dialog {
     width: var(--modal-width);
   }
- 
+
   .modal-backdrop-hero {
     height: 220px;
   }
- 
+
   .modal-title {
     font-size: 1.5rem;
   }
 }
- 
+
 /* xs */
 @media (max-width: 475px) {
   :root {
-    --container: calc(100% - 32px);
+    --container: 100%;
     --modal-width: 100%;
   }
- 
+
   .site-header {
     padding: 12px 0;
   }
- 
+
   .header-inner,
   .header-inner:not(:has(> .header-search)) {
     row-gap: 10px;
   }
- 
+
   .brand-logo {
     font-size: 1.05rem;
     gap: 6px;
   }
- 
+
   .header-actions {
     gap: 4px;
   }
- 
+
   .header-actions .btn-icon-label {
     height: 34px;
     padding: 0 8px;
     gap: 5px;
   }
- 
+
   .header-actions .count-badge {
     min-width: 18px;
     height: 18px;
     padding: 0 5px;
   }
- 
+
   .theme-toggle-btn {
     width: 34px;
     height: 34px;
   }
- 
+
   /* Stat cards: icon above the text so long values keep their room */
   .stat-card {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
- 
+
   .stat-value {
     font-size: 0.95rem;
   }
- 
+
   /* Filter bar: one item per row, sort left and view toggle right */
   .filter-bar {
     grid-template-columns: minmax(0, 1fr);
@@ -1347,75 +1356,74 @@ select {
       "chips"
       "actions";
   }
- 
+
   .filter-bar:has(> .header-search) {
     grid-template-areas:
       "chips"
       "search"
       "actions";
   }
- 
+
   .filter-bar > .header-search {
     max-width: none;
   }
- 
+
   .filter-actions-right {
     justify-self: stretch;
     justify-content: space-between;
   }
- 
+
   .movies-grid {
     gap: 12px;
   }
- 
+
   .movie-card-info {
     padding: 10px;
   }
- 
+
   .movie-card-title {
     font-size: 0.88rem;
   }
- 
+
   .pagination-container {
     gap: 8px;
   }
- 
+
   .modal-overlay {
     padding: 16px;
   }
- 
+
   .modal-backdrop-hero {
     height: 180px;
   }
- 
+
   .modal-body {
     padding: 0 16px 20px;
   }
- 
+
   .modal-poster {
     width: 120px;
   }
- 
+
   .modal-footer-actions > * {
     flex: 1 1 100%;
     justify-content: center;
   }
- 
+
   .api-config-form {
     padding: 24px 20px;
   }
- 
+
   .page-content {
     padding-top: 40px;
     padding-bottom: 40px;
   }
- 
+
   .page-code {
     font-size: 3rem;
   }
- 
+
   .page-title {
     font-size: 1.6rem;
   }
 }
- 
