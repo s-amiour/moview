@@ -7,12 +7,11 @@ import Star from './icons/Star';
 import EyeClosed from './icons/EyeClosed';
 import Eye from './icons/Eye';
 
-// Standard to define shape of props
-type MovieCardProps = {
+// Define component prop shape
+interface MovieCardProps {
   movie: Movie;
   onClick?: () => void;
-};
-
+}
 
 
 export default function MovieCard({ movie, onClick }: MovieCardProps) {
@@ -24,7 +23,7 @@ export default function MovieCard({ movie, onClick }: MovieCardProps) {
   const year = movie.release_date.substring(0, 4);
 
   const handleFavouriteClick = (e: React.MouseEvent) => {
-    e.stopPropagation();  // Prevent event from bubbling up () to parent element(s) or capturing down to child element(s). Both actions mean triggering an element.
+    e.stopPropagation();  // Prevent event from bubbling up to parent element(s) or capturing down to child element(s). Both actions mean triggering an element.
     if (context) {
       context.toggleFavorite(movie);
     } else {

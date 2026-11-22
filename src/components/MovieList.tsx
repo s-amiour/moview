@@ -1,17 +1,25 @@
 import type { Movie, ViewMode } from '../types';
 import MovieCard from './MovieCard';
+import { QuestionMark } from 'lucide-react';
 
-type MovieListProps = {
+// Define component prop shape
+interface MovieListProps {
   movies: Movie[];
   viewMode?: ViewMode;
   onMovieClick?: (movie: Movie) => void;
-};
+}
 
+/**
+ * @param movies, viewMode (grid by default), onMovieClick (onclick listener)
+ * @returns MovieList
+ */
 export default function MovieList({ movies, viewMode = 'grid', onMovieClick }: MovieListProps) {
-  if (movies.length === 0) {
+  if (!movies.length) {
     return (
       <div className="empty-state">
-        <div className="empty-icon">!</div>
+        <div className="empty-icon">
+          <QuestionMark />
+        </div>
         <p className="empty-text">No movies found.</p>
       </div>
     );

@@ -1,21 +1,16 @@
 import { NavLink } from 'react-router-dom';
 import { Heart, Moon, Settings, Shuffle, Sun } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import SearchBar from './SearchBar';
 
-type HeaderProps = {
-  search: string;
-  onSearch: (search: string) => void;
+interface HeaderProps {
   onlyFavorites: boolean;
   onToggleFavorites: () => void;
   onOpenApiConfig: () => void;
   onPickRandom?: () => void;
   canPickRandom?: boolean;
-};
+}
 
 export default function Header({
-  search,
-  onSearch,
   onlyFavorites,
   onToggleFavorites,
   onOpenApiConfig,
@@ -43,8 +38,6 @@ export default function Header({
             About
           </NavLink>
         </nav>
-
-        <SearchBar query={search} onChange={onSearch} />
 
         <div className="header-actions">
           {onPickRandom && (
