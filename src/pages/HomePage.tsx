@@ -47,8 +47,6 @@ function HomeContent() {
   return (
     <>
       <Header
-        search={search}
-        onSearch={setSearch}
         onlyFavorites={onlyFavorites}
         onToggleFavorites={() => setOnlyFavorites((prev) => !prev)}
         onOpenApiConfig={() => setIsApiConfigOpen(true)}
@@ -68,6 +66,8 @@ function HomeContent() {
         <FilterBar
           genre={genre}
           onGenreChange={setGenre}
+          search={search}
+          onSearch={setSearch}
           sort={sort}
           onSortChange={setSort}
           viewMode={viewMode}

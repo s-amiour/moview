@@ -1,10 +1,13 @@
 import { LayoutGrid, List } from 'lucide-react';
 import { GENRES } from '../data/genres';
 import type { SortOption, ViewMode } from '../types';
+import SearchBar from './SearchBar';
 
 type FilterBarProps = {
   genre: string;
   onGenreChange: (genre: string) => void;
+  search: string;
+  onSearch: (search: string) => void;
   sort: SortOption;
   onSortChange: (sort: SortOption) => void;
   viewMode: ViewMode;
@@ -19,6 +22,8 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ];
 
 export default function FilterBar({
+  search,
+  onSearch,
   genre,
   onGenreChange,
   sort,
@@ -49,9 +54,14 @@ export default function FilterBar({
         ))}
       </div>
 
+      <div className="search-bar-wrapper">
+        <SearchBar query={search} onChange={onSearch} />
+      </div>
+
       <div className="filter-actions-right">
         <div className="sort-select-wrapper">
           <select
+            id="sort-select"
             className="sort-select"
             aria-label="Sort movies by"
             value={sort}
