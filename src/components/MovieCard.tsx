@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { Movie } from '../types';
 import { useOptionalAppContext } from '../context/AppContext';
 import { getPosterUrl, getPlaceholderPoster } from '../data/sampleMovies';
