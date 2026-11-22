@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import type { Movie } from '../types';
+import { useAppContext } from '../context/AppContext';
 import { getPosterUrl, getPlaceholderPoster } from '../data/sampleMovies';
 // Icons
 import Star from './icons/Star';
@@ -15,14 +15,15 @@ type MovieCardProps = {
 
 
 export default function MovieCard({ movie, onClick }: MovieCardProps) {
-  const [isFavourite, setIsFavourite] = useState(false);
+  const { isFavorite, toggleFavorite } = useAppContext();
+  const isFavourite = isFavorite(movie.id);
 
   const favouriteLabel = isFavourite ? 'Remove from favourites' : 'Add to favourites';
   const year = movie.release_date.substring(0, 4);
 
   const handleFavouriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();  // Prevent event from bubbling up () to parent element(s) or capturing down to child element(s). Both actions mean triggering an element.
-    setIsFavourite((prev) => !prev);
+    toggleFavorite(movie);
   };
 
   return (

@@ -1,6 +1,7 @@
 import { Database, Film, Globe, Star, Tag } from 'lucide-react';
 import type { Movie } from '../types';
 import { GENRES } from '../data/genres';
+import styles from './StatsBanner.module.css';
 
 type StatsBannerProps = {
   movies: Movie[];
@@ -17,44 +18,44 @@ export default function StatsBanner({ movies, totalResults, genre, onlyFavorites
   const genreName = genre ? GENRES[Number(genre)] ?? 'Unknown' : 'All Genres';
 
   return (
-    <section className="stats-banner" aria-label="Results summary">
-      <div className="stat-card">
-        <div className="stat-icon">
+    <section className={styles.banner} aria-label="Results summary">
+      <div className={styles.card}>
+        <div className={styles.icon}>
           <Film size={20} />
         </div>
-        <div className="stat-info">
-          <span className="stat-value">{totalResults.toLocaleString()}</span>
-          <span className="stat-label">{onlyFavorites ? 'Saved Movies' : 'Available Titles'}</span>
+        <div className={styles.info}>
+          <span className={styles.value}>{totalResults.toLocaleString()}</span>
+          <span className={styles.label}>{onlyFavorites ? 'Saved Movies' : 'Available Titles'}</span>
         </div>
       </div>
 
-      <div className="stat-card">
-        <div className="stat-icon" style={{ color: 'var(--star-gold)' }}>
+      <div className={styles.card}>
+        <div className={styles.icon} style={{ color: 'var(--star-gold)' }}>
           <Star size={20} />
         </div>
-        <div className="stat-info">
-          <span className="stat-value">{averageRating} / 10</span>
-          <span className="stat-label">Avg Page Rating</span>
+        <div className={styles.info}>
+          <span className={styles.value}>{averageRating} / 10</span>
+          <span className={styles.label}>Avg Page Rating</span>
         </div>
       </div>
 
-      <div className="stat-card">
-        <div className="stat-icon">
+      <div className={styles.card}>
+        <div className={styles.icon}>
           <Tag size={20} />
         </div>
-        <div className="stat-info">
-          <span className="stat-value">{genreName}</span>
-          <span className="stat-label">Selected Category</span>
+        <div className={styles.info}>
+          <span className={styles.value}>{genreName}</span>
+          <span className={styles.label}>Selected Category</span>
         </div>
       </div>
 
-      <div className="stat-card">
-        <div className="stat-icon" style={{ color: '#3b82f6' }}>
+      <div className={styles.card}>
+        <div className={styles.icon} style={{ color: '#3b82f6' }}>
           {isLiveApi ? <Globe size={20} /> : <Database size={20} />}
         </div>
-        <div className="stat-info">
-          <span className="stat-value">{isLiveApi ? 'Live TMDB API' : 'Local Data'}</span>
-          <span className="stat-label">Data Source</span>
+        <div className={styles.info}>
+          <span className={styles.value}>{isLiveApi ? 'Live TMDB API' : 'Local Data'}</span>
+          <span className={styles.label}>Data Source</span>
         </div>
       </div>
     </section>
